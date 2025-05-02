@@ -1,11 +1,11 @@
 import pickle
 
-def load(str):
-    if str == 'heating':
-        with open('models/heating.pkl', 'rb') as f:
-            models = pickle.load(f)
-    if str == 'cooling':
-        with open('models/cooling.pkl', 'rb') as f:
-            models = pickle.load(f)
+
+def load():
+    with open(f"models/heating_AL.pkl", "rb") as f:
+        heating = pickle.load(f)
+    with open(f"models/cooling_AL.pkl", "rb") as f:
+        cooling = pickle.load(f)
+    models = {"heating": heating, "cooling": cooling}
 
     return models

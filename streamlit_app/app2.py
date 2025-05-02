@@ -6,15 +6,15 @@ from load_model import load
 from tab import *
 
 # Load models
-# models_heating = load('heating')
-models_cooling = load('cooling')
+models = load()
+
 model_names = [
     "Linear Regression",
     "Decision Tree",
     "Random Forest",
     "SVM",
     "XGBoost",
-    "K-Nearest Neighbors"
+    "K-Nearest Neighbors",
 ]
 
 # --------- Cấu hình trang ----------
@@ -38,7 +38,7 @@ st.markdown(
         <h4 style='margin-top: 0;'>Nhập thông số kiến trúc và chọn mô hình để dự đoán Heating/Cooling Load</h4>
     </div>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
 # ---------- Sidebar lựa chọn chức năng ----------
@@ -50,11 +50,11 @@ app_mode = st.sidebar.radio(
         "🌱 Tính phát thải CO₂",
         "☀️ Gợi ý số tấm pin mặt trời",
         "🏠 Phân loại hiệu suất",
-    ]
+    ],
 )
 
 # Chèn CSS để đặt ảnh nền
-page_bg_img = '''
+page_bg_img = """
 <style>
 [data-testid="stAppViewContainer"] {
     background-image: url("https://i.pinimg.com/1200x/f2/9d/04/f29d04f03783d8a8eacdbae199c01f35.jpg");
@@ -71,13 +71,13 @@ page_bg_img = '''
     background-color: rgba(0, 0, 0, 0) !important;  /* Trong suốt sidebar */
 }
 </style>
-'''
+"""
 
 st.markdown(page_bg_img, unsafe_allow_html=True)
 
 
 # --------- Khởi tạo session_state nếu chưa có ----------
-if 'submitted' not in st.session_state:
+if "submitted" not in st.session_state:
     st.session_state.submitted = False
 
 # --------- Title & Description ----------
@@ -90,16 +90,16 @@ if 'submitted' not in st.session_state:
 # )
 
 if app_mode == "🔧 Tính công suất HVAC":
-    run('hvac', model_names, models_cooling)
+    run("hvac", model_names, models)
 
 if app_mode == "💵 Ước tính chi phí":
-    run('predict energy', model_names, models_cooling)
+    run("predict energy", model_names, models)
 
 if app_mode == "🌱 Tính phát thải CO₂":
-    run('co2 calculation', model_names, models_cooling)
-    
+    run("co2 calculation", model_names, models)
+
 if app_mode == "☀️ Gợi ý số tấm pin mặt trời":
-    run('solar panel calculation', model_names, models_cooling)
+    run("solar panel calculation", model_names, models)
 
 if app_mode == "🏠 Phân loại hiệu suất":
-    run('energy efficiency', model_names, models_cooling)
+    run("energy efficiency", model_names, models)
