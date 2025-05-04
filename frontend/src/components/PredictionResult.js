@@ -81,7 +81,7 @@ const PredictionResult = ({ results }) => {
             {results.heatingLoad.toFixed(2)}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            kWh/m² per year
+            kWh
           </Typography>
         </Box>
 
@@ -119,7 +119,7 @@ const PredictionResult = ({ results }) => {
             {results.coolingLoad.toFixed(2)}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            kWh/m² per year
+            kWh
           </Typography>
         </Box>
       </Box>
