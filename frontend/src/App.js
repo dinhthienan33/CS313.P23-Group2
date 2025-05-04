@@ -49,7 +49,7 @@ const App = () => {
     glazingAreaDistribution: 0
   });
   const [predictionResults, setPredictionResults] = useState(null);
-  const [selectedModel, setSelectedModel] = useState('Linear Regression');
+  const [selectedModel, setSelectedModel] = useState('XGBoost');
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -173,7 +173,7 @@ const App = () => {
       case 'co2':
         return <CO2Calculator {...props} />;
       case 'solar':
-        return <SolarPanelCalculator {...props} />;
+        return <SolarPanelCalculator {...props} roofArea={buildingParams.roofArea} />;
       case 'efficiency':
         return <EfficiencyClassifier {...props} />;
       default:
