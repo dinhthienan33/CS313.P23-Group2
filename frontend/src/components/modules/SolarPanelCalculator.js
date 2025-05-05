@@ -19,7 +19,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
 
@@ -99,7 +98,7 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
       <Divider sx={{ mb: 3 }} />
 
       <Typography variant="body1" paragraph>
-        Based on your building’s energy demand and available roof area, this is your recommended solar configuration:
+        Based on your building's energy demand and available roof area, this is your recommended solar configuration:
       </Typography>
 
       <Box sx={{ p: 2, backgroundColor: 'rgba(66, 165, 245, 0.1)', borderRadius: 2, mb: 4 }}>
