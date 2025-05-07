@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   api:
-    image: andt123/energy-efficient-app:backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
     environment:
@@ -14,14 +16,17 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    volumes:
+      - ./backend/models:/app/models
 
   frontend:
     build:
-      context: ./energy-efficiency-app
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "3000:80"
     depends_on:
       api:
         condition: service_healthy
     environment:
-      - REACT_APP_API_URL=http://api:5000/api
+      - REACT_APP_API_URL=http://api:5000/api 

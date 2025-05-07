@@ -68,7 +68,7 @@ const PredictionResult = ({ results }) => {
             />
           </Box>
           <Typography variant="h6" gutterBottom>
-            Heating Load
+            Heating Load (Y1)
           </Typography>
           <Typography 
             variant="h3" 
@@ -81,7 +81,7 @@ const PredictionResult = ({ results }) => {
             {results.heatingLoad.toFixed(2)}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            kWh
+            kW
           </Typography>
         </Box>
 
@@ -106,7 +106,7 @@ const PredictionResult = ({ results }) => {
             />
           </Box>
           <Typography variant="h6" gutterBottom>
-            Cooling Load
+            Cooling Load (Y2)
           </Typography>
           <Typography 
             variant="h3" 
@@ -119,7 +119,7 @@ const PredictionResult = ({ results }) => {
             {results.coolingLoad.toFixed(2)}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            kWh
+            kW
           </Typography>
         </Box>
       </Box>

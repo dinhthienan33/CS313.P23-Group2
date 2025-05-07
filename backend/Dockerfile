@@ -12,16 +12,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the code
 COPY . .
 
-# Create models directory
-#RUN mkdir -p models
-COPY models/ .
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PORT=5000
-
-# Generate models during build
-#RUN python app.py --models-init
 
 # Expose the port
 EXPOSE 5000
