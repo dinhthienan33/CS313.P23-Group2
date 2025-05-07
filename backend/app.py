@@ -27,10 +27,17 @@ def load_models():
         # Create models directory if it doesn't exist
         os.makedirs(MODEL_DIR, exist_ok=True)
         
+        # Print current directory and model directory for debugging
+        print(f"Current working directory: {os.getcwd()}")
+        print(f"MODEL_DIR: {MODEL_DIR}")
+        print(f"Directory contents: {os.listdir(MODEL_DIR) if os.path.exists(MODEL_DIR) else 'Directory does not exist'}")
+        
         # Check if model files exist
         col_transformer_path = os.path.join(MODEL_DIR, "col_transformer.pkl")
         heating_path = os.path.join(MODEL_DIR, "heating_AL.pkl")
         cooling_path = os.path.join(MODEL_DIR, "cooling_AL.pkl")
+        
+        print(f"Checking for model files: {os.path.exists(col_transformer_path)}, {os.path.exists(heating_path)}, {os.path.exists(cooling_path)}")
         
         if not (os.path.exists(col_transformer_path) and os.path.exists(heating_path) and os.path.exists(cooling_path)):
             print("Warning: Some model files are missing. Using fallback calculations.")
@@ -259,13 +266,12 @@ def get_available_models():
         "models": available_models
     })
 
+# Load models at startup
+loaded = load_models()
+if not loaded:
+    print("Warning: Models could not be loaded. Using fallback calculations at startup.")
+    
 if __name__ == "__main__":
-    # Load models on startup
-    loaded = load_models()
-    
-    if not loaded:
-        print("Warning: Models could not be loaded. Using fallback calculations.")
-    
     # Run the Flask app
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True) 

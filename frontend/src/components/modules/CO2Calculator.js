@@ -11,13 +11,18 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  LinearProgress
+  LinearProgress,
+  TextField,
+  InputAdornment
 } from '@mui/material';
 import Co2Icon from '@mui/icons-material/Co2';
 
 const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
   // Default emission factor in kg CO₂/kWh
   const [emissionFactor, setEmissionFactor] = useState(0.5);
+  
+  // Default operating hours per year
+  const [hoursPerYear, setHoursPerYear] = useState(2000);
 
   // Predefined emission factors for different regions/energy sources
   const emissionFactors = [
@@ -28,7 +33,9 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
   ];
   
   // Calculate total energy and emissions
-  const totalEnergy = (heatingLoad + coolingLoad) * area; // kWh/year
+  // Convert from kW (power) to kWh (energy) by multiplying by hours
+  const totalPower = heatingLoad + coolingLoad; // kW
+  const totalEnergy = totalPower * hoursPerYear; // kWh/year
   const totalEmission = totalEnergy * emissionFactor; // kg CO₂/year
   
   // Calculate carbon intensity rating (based on emissions per m²)
@@ -93,6 +100,11 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
   const formatNumber = (number) => {
     return number.toLocaleString('en-US');
   };
+
+  // Handle hours slider change
+  const handleHoursChange = (event, newValue) => {
+    setHoursPerYear(newValue);
+  };
   
   return (
     <Box>
@@ -114,6 +126,38 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
       <Typography variant="body1" paragraph>
         We've calculated your building's estimated carbon emissions based on its energy consumption:
       </Typography>
+
+      <Box 
+        sx={{ 
+          backgroundColor: 'background.paper', 
+          p: 2, 
+          borderRadius: 2,
+          mb: 3,
+          boxShadow: 1
+        }}
+      >
+        <Typography variant="subtitle1" gutterBottom>
+          Base Power Requirements:
+        </Typography>
+        <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+          {totalPower.toFixed(2)} kW
+        </Typography>
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          Based on heating ({heatingLoad.toFixed(2)} kW) + cooling ({coolingLoad.toFixed(2)} kW)
+        </Typography>
+        
+        <Divider sx={{ my: 1.5 }} />
+        
+        <Typography variant="subtitle1" gutterBottom>
+          Annual Energy Consumption:
+        </Typography>
+        <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+          {formatNumber(Math.round(totalEnergy))} kWh/year
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Based on {hoursPerYear} operating hours per year
+        </Typography>
+      </Box>
       
       <Box 
         sx={{ 
@@ -194,16 +238,45 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
       </Box>
       
       <Typography variant="h6" gutterBottom>
+        Annual Operating Hours:
+      </Typography>
+      
+      <Stack spacing={2} direction="row" sx={{ mb: 3 }} alignItems="center">
+        <Slider
+          value={hoursPerYear}
+          onChange={handleHoursChange}
+          min={1000}
+          max={8760}
+          step={100}
+          valueLabelDisplay="auto"
+          aria-labelledby="operating-hours-slider"
+        />
+        <TextField
+          value={hoursPerYear}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            if (!isNaN(value) && value > 0 && value <= 8760) {
+              setHoursPerYear(value);
+            }
+          }}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">hrs</InputAdornment>,
+          }}
+          sx={{ width: 120 }}
+        />
+      </Stack>
+      
+      <Typography variant="h6" gutterBottom>
         Emission Factor Settings:
       </Typography>
       
       <Stack spacing={2} sx={{ mb: 3 }}>
         <FormControl fullWidth>
-          <InputLabel id="emission-factor-label">Energy Source</InputLabel>
+          <InputLabel id="emission-source-label">Electricity Source/Region</InputLabel>
           <Select
-            labelId="emission-factor-label"
+            labelId="emission-source-label"
             value={emissionFactor}
-            label="Energy Source"
+            label="Electricity Source/Region"
             onChange={(e) => setEmissionFactor(e.target.value)}
           >
             {emissionFactors.map((factor) => (
@@ -216,23 +289,24 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
         
         <Slider
           value={emissionFactor}
-          onChange={(_, newValue) => setEmissionFactor(newValue)}
           min={0}
-          max={1}
-          step={0.1}
+          max={1.5}
+          step={0.05}
+          onChange={(e, val) => setEmissionFactor(val)}
+          valueLabelDisplay="auto"
+          valueLabelFormat={(value) => `${value} kg CO₂/kWh`}
           marks={[
             { value: 0, label: '0' },
             { value: 0.5, label: '0.5' },
-            { value: 1, label: '1.0' }
+            { value: 1.0, label: '1.0' },
+            { value: 1.5, label: '1.5' }
           ]}
-          valueLabelDisplay="auto"
-          valueLabelFormat={(value) => `${value} kg CO₂/kWh`}
         />
       </Stack>
       
       <Typography variant="subtitle2" color="text.secondary">
-        * Calculations are based on total energy consumption of {totalEnergy.toFixed(2)} kWh/year
-        and the selected emission factor of {emissionFactor} kg CO₂/kWh.
+        * CO₂ emission values are calculated based on your building's power requirements, 
+        estimated operating hours, and the carbon emission factor of your electricity source.
       </Typography>
     </Box>
   );

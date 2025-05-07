@@ -8,7 +8,8 @@ import {
   Select, 
   MenuItem, 
   Box,
-  CircularProgress
+  CircularProgress,
+  Typography
 } from '@mui/material';
 
 const InputForm = ({ 
@@ -46,6 +47,14 @@ const InputForm = ({
       <Grid container spacing={3}>
         {/* Relative Compactness */}
         <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <Typography variant="subtitle2" color="primary" sx={{ mr: 1, fontWeight: 'bold' }}>
+              X1:
+            </Typography>
+            <Typography variant="subtitle2">
+              Relative Compactness
+            </Typography>
+          </Box>
           <TextField
             fullWidth
             label="Relative Compactness"
@@ -66,6 +75,14 @@ const InputForm = ({
 
         {/* Wall Area */}
         <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <Typography variant="subtitle2" color="primary" sx={{ mr: 1, fontWeight: 'bold' }}>
+              X3:
+            </Typography>
+            <Typography variant="subtitle2">
+              Wall Area
+            </Typography>
+          </Box>
           <TextField
             fullWidth
             label="Wall Area (m²)"
@@ -85,6 +102,14 @@ const InputForm = ({
 
         {/* Roof Area */}
         <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <Typography variant="subtitle2" color="primary" sx={{ mr: 1, fontWeight: 'bold' }}>
+              X4:
+            </Typography>
+            <Typography variant="subtitle2">
+              Roof Area
+            </Typography>
+          </Box>
           <TextField
             fullWidth
             label="Roof Area (m²)"
@@ -104,6 +129,14 @@ const InputForm = ({
 
         {/* Overall Height */}
         <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <Typography variant="subtitle2" color="primary" sx={{ mr: 1, fontWeight: 'bold' }}>
+              X5:
+            </Typography>
+            <Typography variant="subtitle2">
+              Overall Height
+            </Typography>
+          </Box>
           <TextField
             fullWidth
             label="Overall Height (m)"
@@ -123,6 +156,14 @@ const InputForm = ({
 
         {/* Glazing Area */}
         <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <Typography variant="subtitle2" color="primary" sx={{ mr: 1, fontWeight: 'bold' }}>
+              X7:
+            </Typography>
+            <Typography variant="subtitle2">
+              Glazing Area
+            </Typography>
+          </Box>
           <TextField
             fullWidth
             label="Glazing Area (ratio)"
@@ -144,6 +185,14 @@ const InputForm = ({
 
         {/* Glazing Area Distribution */}
         <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <Typography variant="subtitle2" color="primary" sx={{ mr: 1, fontWeight: 'bold' }}>
+              X8:
+            </Typography>
+            <Typography variant="subtitle2">
+              Glazing Area Distribution
+            </Typography>
+          </Box>
           <FormControl fullWidth variant="outlined" disabled={isLoading}>
             <InputLabel id="glazing-distribution-label">
               Glazing Area Distribution
