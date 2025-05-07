@@ -46,7 +46,8 @@ const App = () => {
     roofArea: 110.25,
     overallHeight: 7.00,
     glazingArea: 0.0,
-    glazingAreaDistribution: 0
+    glazingAreaDistribution: 0,
+    city: ''
   });
   const [predictionResults, setPredictionResults] = useState(null);
   const [selectedModel, setSelectedModel] = useState('XGBoost');
@@ -162,7 +163,8 @@ const App = () => {
     const props = {
       heatingLoad: predictionResults.heatingLoad,
       coolingLoad: predictionResults.coolingLoad,
-      area: totalArea
+      area: totalArea,
+      city: buildingParams.city // Pass city to modules
     };
 
     switch (currentModule) {
@@ -248,11 +250,12 @@ const App = () => {
                   sx={{ 
                     p: 3, 
                     mb: 3, 
-                    borderRadius: 2,
-                    backgroundColor: '#ffebee'
+                    borderRadius: 2, 
+                    bgcolor: 'error.light',
+                    color: 'error.contrastText'
                   }}
                 >
-                  <Typography color="error">
+                  <Typography component="p">
                     {error}
                   </Typography>
                 </Paper>
@@ -264,7 +267,10 @@ const App = () => {
                     elevation={3} 
                     sx={{ p: 3, mb: 3, borderRadius: 2 }}
                   >
-                    <PredictionResult results={predictionResults} />
+                    <PredictionResult 
+                      results={predictionResults} 
+                      buildingParams={buildingParams}
+                    />
                   </Paper>
                   
                   <Paper 
@@ -283,4 +289,4 @@ const App = () => {
   );
 };
 
-export default App; 
+export default App;

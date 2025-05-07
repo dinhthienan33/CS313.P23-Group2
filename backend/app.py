@@ -1,9 +1,15 @@
 import os
 import pickle
 import numpy as np
-from flask import Flask, request, jsonify
+# Set matplotlib backend to non-interactive before other imports
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
+import matplotlib.pyplot as plt
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import pandas as pd
+import io
+import base64
 from utils import validate_input_data
 
 app = Flask(__name__)
@@ -11,6 +17,32 @@ CORS(app)  # Enable CORS for all routes
 
 # Model paths
 MODEL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models")
+
+# Load climate and CO2 data
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+CLIMATE_DATA_PATH = os.path.join(DATA_DIR, "Updated_CDD_HDD_Energy_CO2.csv")
+
+# City climate data
+city_data = {}
+
+def load_city_data():
+    """Load city climate and CO2 data from CSV"""
+    try:
+        df = pd.read_csv(CLIMATE_DATA_PATH)
+        for _, row in df.iterrows():
+            city_name = row['City']
+            city_data[city_name] = {
+                'hdd': row['Total HDD'],
+                'cdd': row['Total CDD'],
+                'co2_emission': row['CO2 emission (tonnes)'],
+                'energy_consumption': row['Energy Consumption (million kWh)'],
+                'number_of_houses': row['Number of houses'] if row['Number of houses'] > 0 else 1  # Avoid division by zero
+            }
+        print(f"Loaded climate data for {len(city_data)} cities")
+        return True
+    except Exception as e:
+        print(f"Error loading climate data: {e}")
+        return False
 
 # Load models
 models = {}
@@ -121,7 +153,8 @@ def root():
         "endpoints": {
             "/health": "Check API health",
             "/api/models": "Get available prediction models",
-            "/api/predict": "Make predictions"
+            "/api/predict": "Make predictions",
+            "/api/co2-comparison": "Get CO2 comparison data and chart"
         }
     })
 
@@ -259,6 +292,105 @@ def get_available_models():
         "models": available_models
     })
 
+@app.route("/api/co2-comparison", methods=["POST"])
+def get_co2_comparison():
+    """Calculate CO2 comparison data and generate chart"""
+    try:
+        # Get data from request
+        data = request.json
+        
+        # Extract parameters
+        city = data.get("city", "")
+        building_co2 = data.get("buildingCO2", 0)  # CO2 from the building in kg
+        
+        if not city:
+            return jsonify({
+                "success": False,
+                "error": "City name is required"
+            }), 400
+        
+        # Extract region from city name
+        region = None
+        if "(Northern)" in city:
+            region = "Northern"
+            reference_city = "Hanoi (Northern)"
+        elif "(Central)" in city:
+            region = "Central"
+            reference_city = "Da Nang (Central)"
+        elif "(Southern)" in city:
+            region = "Southern"
+            reference_city = "Ho Chi Minh City (Southern)"
+        else:
+            return jsonify({
+                "success": False,
+                "error": f"Could not determine region for city: {city}"
+            }), 400
+        
+        # Get reference city data
+        if reference_city not in city_data:
+            return jsonify({
+                "success": False,
+                "error": f"Reference city not found in data: {reference_city}"
+            }), 404
+        
+        # Calculate average CO2 per house in the reference city
+        ref_city_data = city_data[reference_city]
+        avg_co2_per_house = 0
+        
+        if ref_city_data['number_of_houses'] > 0:
+            # Convert tonnes to kg (× 1000)
+            avg_co2_per_house = (ref_city_data['co2_emission'] * 1000) / ref_city_data['number_of_houses']
+        
+        # Generate comparison chart - ensure we create and close the figure
+        plt.figure(figsize=(10, 6))
+        try:
+            # Data for the bar chart
+            labels = ['Your Building', f'Average {reference_city}']
+            values = [building_co2, avg_co2_per_house]
+            colors = ['#1a73e8', '#66bb6a']
+            
+            # Create the bar chart
+            bars = plt.bar(labels, values, color=colors, width=0.5)
+            
+            # Add values on top of bars
+            for bar in bars:
+                height = bar.get_height()
+                plt.text(bar.get_x() + bar.get_width()/2., height + 0.1,
+                        f'{int(height):,}', ha='center', va='bottom', fontsize=12)
+            
+            plt.title(f'CO₂ Emissions Comparison (kg/year)', fontsize=16)
+            plt.ylabel('CO₂ Emissions (kg/year)', fontsize=12)
+            plt.ylim(0, max(values) * 1.2)  # Add 20% space above the highest bar
+            plt.grid(axis='y', linestyle='--', alpha=0.7)
+            
+            # Save the plot to a bytes buffer
+            buffer = io.BytesIO()
+            plt.savefig(buffer, format='png', bbox_inches='tight')
+            buffer.seek(0)
+            
+            # Encode the image to base64
+            img_str = base64.b64encode(buffer.getvalue()).decode('utf-8')
+            
+            # Return the data and image
+            return jsonify({
+                "success": True,
+                "region": region,
+                "reference_city": reference_city,
+                "building_co2": building_co2,
+                "avg_co2_per_house": avg_co2_per_house,
+                "chart_image": img_str
+            })
+        finally:
+            # Always make sure to close the figure to prevent memory leaks
+            plt.close()
+        
+    except Exception as e:
+        print(f"Error generating CO2 comparison: {e}")
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+
 if __name__ == "__main__":
     # Load models on startup
     loaded = load_models()
@@ -266,6 +398,12 @@ if __name__ == "__main__":
     if not loaded:
         print("Warning: Models could not be loaded. Using fallback calculations.")
     
+    # Load city climate data
+    loaded_climate = load_city_data()
+    
+    if not loaded_climate:
+        print("Warning: Climate data could not be loaded.")
+    
     # Run the Flask app
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True) 
+    app.run(host="0.0.0.0", port=port, debug=True)
