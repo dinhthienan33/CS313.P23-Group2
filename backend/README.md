@@ -30,10 +30,6 @@ pip install -r requirements.txt
 
 ### 3. Prepare Models
 
-You have two options for setting up the model files:
-
-#### Option 1: Copy models manually
-
 Copy the model files to the `models` directory:
 - col_transformer.pkl
 - heating_AL.pkl
@@ -41,21 +37,6 @@ Copy the model files to the `models` directory:
 
 The API expects these specific model files to be present.
 
-#### Option 2: Use the setup script
-
-Use the provided setup script to copy model files from a source directory:
-
-```bash
-python setup_models.py --source /path/to/your/models --dest models
-```
-
-Replace `/path/to/your/models` with the path to the directory containing your model files.
-
-Alternatively, you can run the API with the models directory specified:
-
-```bash
-python run.py --models /path/to/your/models
-```
 
 ### 4. Run the Server
 
