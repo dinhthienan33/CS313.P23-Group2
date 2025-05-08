@@ -136,11 +136,11 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
                   <Typography variant="body2"><strong>{translations.modules.solar.panelsType}:</strong> {selectedPanelType}</Typography>
                   <Typography variant="body2"><strong>{translations.modules.solar.wattage}:</strong> {panelWattage} Wp</Typography>
                   <Typography variant="body2"><strong>{translations.modules.solar.panelArea}:</strong> {panelArea} m²</Typography>
-                  <Typography variant="body2"><strong>Efficiency:</strong> {(panelEfficiency * 100).toFixed(1)}%</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.efficiency}:</strong> {(panelEfficiency * 100).toFixed(1)}%</Typography>
                   <Typography variant="body2"><strong>{translations.modules.solar.estimatedProduction}:</strong> {dailyPanelOutput.toFixed(2)} kWh</Typography>
                   <Typography variant="body2"><strong>{translations.modules.solar.panelsNeeded}:</strong> {actualPanels}</Typography>
                   <Typography variant="body2"><strong>{translations.modules.solar.systemRequired}:</strong> {requiredDaily.toFixed(1)} kWh</Typography>
-                  <Typography variant="body2"><strong>{translations.modules.solar.carbonReduction}:</strong> {percentMet.toFixed(1)}%</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.costSavings}:</strong> {percentMet.toFixed(1)}%</Typography>
                   <Typography variant="body2"><strong>{translations.modules.solar.totalCost}:</strong> {totalCost.toLocaleString()} VND</Typography>
                 </Box>
                 <Typography variant="body2" color="text.secondary">
