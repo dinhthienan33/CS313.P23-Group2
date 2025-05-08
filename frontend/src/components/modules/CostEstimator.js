@@ -10,8 +10,11 @@ import {
   Stack
 } from '@mui/material';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import { useLanguage } from '../../services/LanguageContext';
 
 const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
+  const { translations } = useLanguage();
+  
   // Default energy price in VND/kWh
   const [pricePerKwh, setPricePerKwh] = useState(3000);
   // Default operating hours per year
@@ -68,15 +71,14 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
       >
         <AttachMoneyIcon sx={{ mr: 1, color: 'primary.main' }} />
         <Typography variant="h5" component="h2">
-          Annual Energy Cost Estimation
+          {translations.modules.cost.title}
         </Typography>
       </Box>
       
       <Divider sx={{ mb: 3 }} />
       
       <Typography variant="body1" paragraph>
-        Based on your building's characteristics, we've calculated the estimated 
-        annual energy consumption and cost:
+        {translations.modules.cost.description}
       </Typography>
       
       <Paper
@@ -84,7 +86,7 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
         sx={{ p: 3, mb: 4, backgroundColor: 'rgba(25, 118, 210, 0.05)' }}
       >
         <Typography variant="h6" gutterBottom>
-          Power Requirement:
+          {translations.modules.cost.heatingCost}:
         </Typography>
         <Typography 
           variant="h3" 
@@ -93,11 +95,11 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
           {(heatingLoad + coolingLoad).toFixed(2)} kW
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Base power requirement (heating + cooling)
+          {translations.results.heatingLoad} + {translations.results.coolingLoad}
         </Typography>
         
         <Typography variant="h6" gutterBottom>
-          Annual Energy Consumption:
+          {translations.modules.cost.monthlyUsage}:
         </Typography>
         <Typography 
           variant="h3" 
@@ -109,18 +111,18 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
         <Divider sx={{ my: 2 }} />
         
         <Typography variant="h6" gutterBottom>
-          Estimated Annual Cost:
+          {translations.modules.cost.annualEnergyCost}:
         </Typography>
         <Typography 
           variant="h3" 
           sx={{ fontWeight: 'bold', color: '#e65100' }}
         >
-          {formatNumber(Math.round(estimatedCost))} VND/year
+          {formatNumber(Math.round(estimatedCost))} {translations.modules.cost.currency}/year
         </Typography>
       </Paper>
       
       <Typography variant="h6" gutterBottom>
-        Adjust Electricity Price:
+        {translations.modules.cost.costSaving}:
       </Typography>
       
       <Stack 
@@ -143,7 +145,7 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
               { value: 6000, label: '6,000' }
             ]}
             valueLabelDisplay="auto"
-            valueLabelFormat={(value) => `${value} VND`}
+            valueLabelFormat={(value) => `${value} ${translations.modules.cost.currency}`}
           />
         </Box>
         
@@ -152,7 +154,7 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
           onChange={handlePriceInputChange}
           InputProps={{
             endAdornment: (
-              <InputAdornment position="end">VND/kWh</InputAdornment>
+              <InputAdornment position="end">{translations.modules.cost.currency}/kWh</InputAdornment>
             ),
           }}
           variant="outlined"
@@ -162,7 +164,7 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
       </Stack>
 
       <Typography variant="h6" gutterBottom>
-        Adjust Annual Operating Hours:
+        {translations.modules.cost.savingTips}:
       </Typography>
       
       <Stack 
@@ -199,13 +201,58 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
           }}
           variant="outlined"
           size="small"
-          sx={{ width: { xs: '100%', sm: 200 } }}
+          sx={{ width: { xs: '100%', sm: 150 } }}
         />
       </Stack>
       
-      <Typography variant="subtitle2" color="text.secondary" paragraph>
-        * Calculations are based on the predicted heating load of {heatingLoad.toFixed(2)} kW 
-        and cooling load of {coolingLoad.toFixed(2)} kW, with an estimated {hoursPerYear} operating hours per year.
+      <Box sx={{ mb: 2 }}>
+        <Typography variant="h6" gutterBottom>
+          {translations.modules.cost.monthlyUsage}
+        </Typography>
+        <Paper variant="outlined" sx={{ p: 2 }}>
+          <Box 
+            sx={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
+              gap: 1 
+            }}
+          >
+            {Array.from({ length: 12 }).map((_, index) => {
+              // Simple estimation for monthly variation
+              const month = index + 1;
+              const factor = month <= 2 || month >= 11 ? 1.2 : // Winter months
+                            month >= 6 && month <= 8 ? 1.3 : // Summer months
+                            1.0; // Spring/Fall
+              
+              const monthlyCost = Math.round((estimatedCost / 12) * factor);
+              
+              return (
+                <Box 
+                  key={index} 
+                  sx={{ 
+                    p: 1, 
+                    textAlign: 'center',
+                    borderRadius: 1,
+                    backgroundColor: factor > 1.1 ? 'rgba(255, 152, 0, 0.1)' : 'rgba(76, 175, 80, 0.1)',
+                    border: 1,
+                    borderColor: factor > 1.1 ? 'rgba(255, 152, 0, 0.3)' : 'rgba(76, 175, 80, 0.3)',
+                  }}
+                >
+                  <Typography variant="caption" display="block">
+                    {`${translations.modules.cost.month} ${month}`}
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                    {formatNumber(monthlyCost)}
+                  </Typography>
+                </Box>
+              );
+            })}
+          </Box>
+        </Paper>
+      </Box>
+      
+      <Typography variant="body2" color="text.secondary">
+        * {translations.modules.cost.savingTips}: {translations.modules.cost.description}
       </Typography>
     </Box>
   );

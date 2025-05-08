@@ -13,14 +13,17 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import Co2Icon from '@mui/icons-material/Co2';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import HomeIcon from '@mui/icons-material/Home';
+import { useLanguage } from '../services/LanguageContext';
 
 const Sidebar = ({ currentModule, onModuleChange }) => {
+  const { translations } = useLanguage();
+
   const modules = [
-    { id: 'hvac', name: 'HVAC Capacity', icon: <BuildIcon /> },
-    { id: 'cost', name: 'Energy Cost', icon: <AttachMoneyIcon /> },
-    { id: 'co2', name: 'CO₂ Emissions', icon: <Co2Icon /> },
-    { id: 'solar', name: 'Solar Panels', icon: <WbSunnyIcon /> },
-    { id: 'efficiency', name: 'Efficiency Rating', icon: <HomeIcon /> }
+    { id: 'hvac', name: translations.sidebar.hvac, icon: <BuildIcon /> },
+    { id: 'cost', name: translations.sidebar.cost, icon: <AttachMoneyIcon /> },
+    { id: 'co2', name: translations.sidebar.co2, icon: <Co2Icon /> },
+    { id: 'solar', name: translations.sidebar.solar, icon: <WbSunnyIcon /> },
+    { id: 'efficiency', name: translations.sidebar.efficiency, icon: <HomeIcon /> }
   ];
 
   return (

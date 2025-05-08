@@ -7,8 +7,11 @@ import {
 } from '@mui/material';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
+import { useLanguage } from '../services/LanguageContext';
 
 const PredictionResult = ({ results }) => {
+  const { translations } = useLanguage();
+  
   // Define color thresholds for visual indicators
   const getHeatingColor = (value) => {
     if (value < 10) return '#4caf50'; // green
@@ -26,7 +29,7 @@ const PredictionResult = ({ results }) => {
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Typography variant="h5" component="h2" sx={{ flexGrow: 1 }}>
-          🎯 Prediction Results
+          🎯 {translations.results.title}
         </Typography>
         <Chip 
           label={results.model} 
@@ -68,7 +71,7 @@ const PredictionResult = ({ results }) => {
             />
           </Box>
           <Typography variant="h6" gutterBottom>
-            Heating Load (Y1)
+            {translations.results.heatingLoad} (Y1)
           </Typography>
           <Typography 
             variant="h3" 
@@ -106,7 +109,7 @@ const PredictionResult = ({ results }) => {
             />
           </Box>
           <Typography variant="h6" gutterBottom>
-            Cooling Load (Y2)
+            {translations.results.coolingLoad} (Y2)
           </Typography>
           <Typography 
             variant="h3" 
