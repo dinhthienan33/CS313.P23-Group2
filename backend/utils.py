@@ -64,9 +64,9 @@ def validate_input_data(data):
     # Validate data types and ranges
     validations = [
         ("relativeCompactness", 0.0, 1.0, float),
-        ("wallArea", 0.0, 1000.0, float),
-        ("roofArea", 0.0, 1000.0, float),
-        ("overallHeight", 0.0, 100.0, float),
+        ("wallArea", 0.0, float('inf'), float),
+        ("roofArea", 0.0, float('inf'), float),
+        ("overallHeight", 0.0, float('inf'), float),
         ("glazingArea", 0.0, 1.0, float),
         ("glazingAreaDistribution", 0, 5, int)
     ]
