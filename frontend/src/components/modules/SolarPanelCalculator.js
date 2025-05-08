@@ -9,6 +9,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  Slider,
   MenuItem
 } from '@mui/material';
 
@@ -28,14 +29,14 @@ import SolarPowerIcon from '@mui/icons-material/SolarPower';
 import { useLanguage } from '../../services/LanguageContext';
 
 const panelOptions = [
-  { type: 'Pin Mặt Trời JinKo Tiger Pro 550W', wattage: 550, area: 2.578716, price: 2250000, efficiency: 0.2133},
-  { type: 'Tấm Pin Năng Lượng Mặt Trời 150W Mono', wattage: 150, area: 0.85598, price: 1450000, efficiency: 0.188},
-  { type: 'Pin mặt trời Canadian 450 Wp', wattage: 450, area: 2.209184, price: 2250000, efficiency: 0.2037},
-  { type: 'Pin mặt trời LONGi Solar 450W', wattage: 450, area: 2.173572, price: 3250000, efficiency: 0.207},
-  { type: 'Pin Mặt Trời JinKo Tiger Pro 535W', wattage: 535, area: 2.578716, price: 2200000, efficiency: 0.2075},
-  { type: 'Pin Mặt Trời Qcell 420 Wp Korea', wattage: 420, area: 2.1424, price: 3685000, efficiency: 0.196},
-  { type: 'Tấm pin mặt trời AE solar', wattage: 370, area: 1.940352, price: 1965000, efficiency: 0.1907},
-  { type: 'Tấm Pin Năng Lượng Mặt Trời 200W Mono', wattage: 200, area: 1.0064, price: 1650000, efficiency: 0.1915}
+  { type: 'Pin Mặt Trời JinKo Tiger Pro 550W', shortName: 'JinKo 550W', wattage: 550, area: 2.578716, price: 2250000, efficiency: 0.2133 },
+  { type: 'Pin Năng Lượng Mặt Trời 150W Mono', shortName: 'Mono 150W', wattage: 150, area: 0.85598, price: 1450000, efficiency: 0.188 },
+  { type: 'Pin mặt trời Canadian 450 Wp', shortName: 'Canadian 450W', wattage: 450, area: 2.209184, price: 2250000, efficiency: 0.2037 },
+  { type: 'Pin mặt trời LONGi Solar 450W', shortName: 'LONGi 450W', wattage: 450, area: 2.173572, price: 3250000, efficiency: 0.207 },
+  { type: 'Pin Mặt Trời JinKo Tiger Pro 535W', shortName: 'JinKo 535W', wattage: 535, area: 2.578716, price: 2200000, efficiency: 0.2075 },
+  { type: 'Pin Mặt Trời Qcell 420 Wp Korea', shortName: 'Qcell 420W', wattage: 420, area: 2.1424, price: 3685000, efficiency: 0.196 },
+  { type: 'Pin mặt trời AE solar', shortName: 'AE Solar 370W', wattage: 370, area: 1.940352, price: 1965000, efficiency: 0.1907 },
+  { type: 'Pin Năng Lượng Mặt Trời 200W Mono', shortName: 'Mono 200W', wattage: 200, area: 1.0064, price: 1650000, efficiency: 0.1915 }
 ];
 
 
@@ -43,23 +44,22 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
   const { translations } = useLanguage();
   const [selectedPanelType, setSelectedPanelType] = useState(panelOptions[0].type);
   const [sunshineHours, setSunshineHours] = useState(4); // Peak Sun Hours
+  const [hoursPerDay, setHoursPerDay] = useState(12); // Thời gian sử dụng điện mỗi ngày
 
   const panel = panelOptions.find(p => p.type === selectedPanelType);
   const { wattage: panelWattage, area: panelArea, price: panelPrice, efficiency: panelEfficiency } = panel;
-
-  const hoursPerDay = 12;
 
   const chartData = panelOptions.map((panel) => {
     const dailyOutputPerPanel = (panel.wattage * sunshineHours * panel.efficiency) / 1000;
     const requiredDaily = (heatingLoad + coolingLoad) * hoursPerDay;
   
-    const actualPanels = Math.floor(roofArea / panelArea);
+    const actualPanels = Math.floor(roofArea / panel.area);
     const actualDailyOutput = actualPanels * dailyOutputPerPanel;
     const percentMet = (actualDailyOutput / requiredDaily) * 100;
     const totalCost = actualPanels * panel.price;
   
     return {
-      name: panel.type,
+      name: panel.shortName,
       percentMet: +percentMet.toFixed(1),
       totalCost: totalCost, // triệu VND
     };
@@ -133,15 +133,15 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
                 </Typography>
                 <Box sx={{ mb: 2 }}>
                   <Typography variant="body2"><strong>{translations.inputLabels.roofArea}:</strong> {roofArea} m²</Typography>
-                  <Typography variant="body2"><strong>{translations.modules.solar.panelsNeeded}:</strong> {selectedPanelType}</Typography>
-                  <Typography variant="body2"><strong>Wattage:</strong> {panelWattage} Wp</Typography>
-                  <Typography variant="body2"><strong>{translations.modules.solar.systemCapacity}:</strong> {panelArea} m²</Typography>
-                  <Typography variant="body2"><strong>Efficiency:</strong> {(panelEfficiency * 100).toFixed(1)}%</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.panelsType}:</strong> {selectedPanelType}</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.wattage}:</strong> {panelWattage} Wp</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.panelArea}:</strong> {panelArea} m²</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.efficiency}:</strong> {(panelEfficiency * 100).toFixed(1)}%</Typography>
                   <Typography variant="body2"><strong>{translations.modules.solar.estimatedProduction}:</strong> {dailyPanelOutput.toFixed(2)} kWh</Typography>
                   <Typography variant="body2"><strong>{translations.modules.solar.panelsNeeded}:</strong> {actualPanels}</Typography>
-                  <Typography variant="body2"><strong>{translations.modules.solar.estimatedProduction}:</strong> {requiredDaily.toFixed(1)} kWh</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.systemRequired}:</strong> {requiredDaily.toFixed(1)} kWh</Typography>
                   <Typography variant="body2"><strong>{translations.modules.solar.costSavings}:</strong> {percentMet.toFixed(1)}%</Typography>
-                  <Typography variant="body2"><strong>{translations.modules.solar.breakeven}:</strong> {totalCost.toLocaleString()} VND</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.totalCost}:</strong> {totalCost.toLocaleString()} VND</Typography>
                 </Box>
                 <Typography variant="body2" color="text.secondary">
                   {translations.modules.solar.carbonReduction}
@@ -174,30 +174,40 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
             </Select>
           </FormControl>
         </Grid>
-
         <Grid item xs={12} md={6}>
           <FormControl fullWidth>
-            <InputLabel id="sunshine-hours-label">{translations.modules.solar.estimatedProduction}</InputLabel>
+            <InputLabel id="sunshine-hours-label">{translations.modules.solar.sunshineHour}</InputLabel>
             <Select
               labelId="sunshine-hours-label"
               value={sunshineHours}
               label={translations.modules.solar.estimatedProduction}
               onChange={(e) => setSunshineHours(e.target.value)}
             >
-              <MenuItem value={3}>3 hours ({translations.modules.solar.breakeven})</MenuItem>
-              <MenuItem value={4}>4 hours ({translations.modules.solar.costSavings})</MenuItem>
-              <MenuItem value={5}>5 hours (good)</MenuItem>
-              <MenuItem value={6}>6 hours (excellent)</MenuItem>
+              <MenuItem value={3}>3 {translations.modules.solar.hours}</MenuItem>
+              <MenuItem value={4}>4 {translations.modules.solar.hours}</MenuItem>
+              <MenuItem value={5}>5 {translations.modules.solar.hours}</MenuItem>
+              <MenuItem value={6}>6 {translations.modules.solar.hours}</MenuItem>
             </Select>
           </FormControl>
         </Grid>
       </Grid>
-
+      <Typography gutterBottom>
+        {translations.modules.solar.hoursPerDay} : {hoursPerDay} {translations.modules.solar.hours}
+      </Typography>
+      <Slider
+        value={hoursPerDay}
+        onChange={(e, newValue) => setHoursPerDay(newValue)}
+        min={1}
+        max={24}
+        step={1}
+        valueLabelDisplay="auto"
+        sx={{ mx: 2 }}
+      />
       <Typography variant="subtitle2" color="text.secondary">
         * {translations.modules.solar.description}
       </Typography>
       <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
-        {translations.modules.solar.systemCapacity} (%)
+        {translations.modules.solar.carbonReduction} (%)
       </Typography>
 
       <Box sx={{ height: 300 }}>
