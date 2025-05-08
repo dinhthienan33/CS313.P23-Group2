@@ -206,12 +206,12 @@ const InputForm = ({
               onChange={handleChange}
               label={translations.inputLabels.glazingAreaDistribution}
             >
-              <MenuItem value={0}>0 - Uniform</MenuItem>
+              <MenuItem value={0}>0 - No glass</MenuItem>
               <MenuItem value={1}>1 - North</MenuItem>
               <MenuItem value={2}>2 - East</MenuItem>
               <MenuItem value={3}>3 - South</MenuItem>
               <MenuItem value={4}>4 - West</MenuItem>
-              <MenuItem value={5}>5 - N/S</MenuItem>
+              <MenuItem value={5}>5 - Uniform</MenuItem>
             </Select>
           </FormControl>
         </Grid>

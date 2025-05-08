@@ -42,15 +42,18 @@ export const en = {
     cost: {
       title: "Energy Cost Estimation",
       description: "Estimate annual energy costs for heating and cooling",
-      annualEnergyCost: "Annual Energy Cost",
+      annualEnergyCost: "Estimated Annual Energy Cost",
       heatingCost: "Heating Cost",
       coolingCost: "Cooling Cost",
-      currency: "USD",
-      monthlyUsage: "Monthly Usage",
+      currency: "vnd",
       costSaving: "Potential Cost Savings",
       savingTips: "Energy Saving Tips",
       month: "Month",
-      cost: "Cost"
+      cost: "Cost",
+      monthlyCost: "Monthly Cost",
+      totalCapacity: "Total Capacity",
+      pricePerkWh: "Price per kWh",
+      hoursUsedPerDay: "Hours Used per Day",
     },
     co2: {
       title: "CO2 Emissions Calculation",

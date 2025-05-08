@@ -19,6 +19,8 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
   const [pricePerKwh, setPricePerKwh] = useState(3000);
   // Default operating hours per year
   const [hoursPerYear, setHoursPerYear] = useState(2000);
+  // Default hours per day 
+  const [hoursPerDay, setHoursPerDay] = useState(8);
   
   // Calculate total energy consumption and cost
   // Convert kW (power) to kWh (energy) by multiplying by hours
@@ -47,7 +49,8 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
 
   // Handle hours slider change
   const handleHoursChange = (event, newValue) => {
-    setHoursPerYear(newValue);
+    setHoursPerDay(newValue);
+    setHoursPerYear(newValue*365);
   };
   
   // Handle hours input change
@@ -86,7 +89,7 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
         sx={{ p: 3, mb: 4, backgroundColor: 'rgba(25, 118, 210, 0.05)' }}
       >
         <Typography variant="h6" gutterBottom>
-          {translations.modules.cost.heatingCost}:
+          {translations.modules.cost.totalCapacity}:
         </Typography>
         <Typography 
           variant="h3" 
@@ -99,7 +102,7 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
         </Typography>
         
         <Typography variant="h6" gutterBottom>
-          {translations.modules.cost.monthlyUsage}:
+          {translations.modules.cost.yearlyUsage}:
         </Typography>
         <Typography 
           variant="h3" 
@@ -122,7 +125,7 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
       </Paper>
       
       <Typography variant="h6" gutterBottom>
-        {translations.modules.cost.costSaving}:
+        {translations.modules.cost.pricePerkWh}:
       </Typography>
       
       <Stack 
@@ -159,12 +162,12 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
           }}
           variant="outlined"
           size="small"
-          sx={{ width: { xs: '100%', sm: 150 } }}
+          sx={{ width: { xs: '100%', sm: 190 } }}
         />
       </Stack>
 
       <Typography variant="h6" gutterBottom>
-        {translations.modules.cost.savingTips}:
+        {translations.modules.cost.hoursUsedPerDay}:
       </Typography>
       
       <Stack 
@@ -175,24 +178,24 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
       >
         <Box sx={{ flexGrow: 1, width: '100%' }}>
           <Slider
-            value={hoursPerYear}
+            value={hoursPerDay}
             onChange={handleHoursChange}
             aria-labelledby="operating-hours-slider"
-            min={1000}
-            max={8760}
-            step={100}
+            min={0}
+            max={24}
+            step={1}
             marks={[
-              { value: 1000, label: '1,000' },
-              { value: 4380, label: '4,380' },
-              { value: 8760, label: '8,760' }
+              { value: 0, label: '0' },
+              { value: 12, label: '12' },
+              { value: 24, label: '24' }
             ]}
             valueLabelDisplay="auto"
-            valueLabelFormat={(value) => `${value} hrs`}
+            valueLabelFormat={(value) => `${value} hours/day`}
           />
         </Box>
         
         <TextField
-          value={hoursPerYear}
+          value={hoursPerYear} 
           onChange={handleHoursInputChange}
           InputProps={{
             endAdornment: (
@@ -201,47 +204,75 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
           }}
           variant="outlined"
           size="small"
-          sx={{ width: { xs: '100%', sm: 150 } }}
+          sx={{ width: { xs: '100%', sm: 190 } }}
         />
       </Stack>
       
+
       <Box sx={{ mb: 2 }}>
         <Typography variant="h6" gutterBottom>
-          {translations.modules.cost.monthlyUsage}
+          {translations.modules.cost.monthlyCost}
         </Typography>
         <Paper variant="outlined" sx={{ p: 2 }}>
           <Box 
             sx={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))',
-              gap: 1 
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: 1.5
             }}
           >
             {Array.from({ length: 12 }).map((_, index) => {
-              // Simple estimation for monthly variation
               const month = index + 1;
-              const factor = month <= 2 || month >= 11 ? 1.2 : // Winter months
-                            month >= 6 && month <= 8 ? 1.3 : // Summer months
-                            1.0; // Spring/Fall
-              
+            
+              // Determine season
+              let factor = 1.0;
+              let bgColor = 'rgba(22, 241, 29, 0.1)';       // Spring/Fall (Green)
+              let borderColor = 'rgba(81, 188, 134, 0.3)';
+            
+              if (month <= 2 || month >= 11) {
+                factor = 1.2; // Winter
+                bgColor = 'rgba(33, 150, 243, 0.1)';         // Blue
+                borderColor = 'rgba(33, 150, 243, 0.3)';
+              } else if (month >= 6 && month <= 8) {
+                factor = 1.3; // Summer
+                bgColor = 'rgba(255, 152, 0, 0.1)';          // Orange
+                borderColor = 'rgba(255, 152, 0, 0.3)';
+              }
+            
               const monthlyCost = Math.round((estimatedCost / 12) * factor);
-              
+            
               return (
                 <Box 
                   key={index} 
                   sx={{ 
-                    p: 1, 
+                    p: 0.9, // tăng padding
                     textAlign: 'center',
-                    borderRadius: 1,
-                    backgroundColor: factor > 1.1 ? 'rgba(255, 152, 0, 0.1)' : 'rgba(76, 175, 80, 0.1)',
+                    borderRadius: 2,
+                    backgroundColor: bgColor,
                     border: 1,
-                    borderColor: factor > 1.1 ? 'rgba(255, 152, 0, 0.3)' : 'rgba(76, 175, 80, 0.3)',
+                    borderColor: borderColor,
+                    minHeight: 90, // tăng chiều cao box,
+                    minWidth: 90, // tăng chiều rộng box
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center', // căn giữa ngang
                   }}
                 >
-                  <Typography variant="caption" display="block">
+                  <Typography 
+                    variant="subtitle2" 
+                    display="block" 
+                    sx={{ mb: 1, fontSize: '0.95rem' }} // tăng cỡ chữ tháng
+                  >
                     {`${translations.modules.cost.month} ${month}`}
                   </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      fontWeight: 'bold', 
+                      fontSize: '1.2rem' // tăng cỡ chữ số tiền
+                    }}
+                  >
                     {formatNumber(monthlyCost)}
                   </Typography>
                 </Box>
@@ -250,6 +281,7 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
           </Box>
         </Paper>
       </Box>
+
       
       <Typography variant="body2" color="text.secondary">
         * {translations.modules.cost.savingTips}: {translations.modules.cost.description}

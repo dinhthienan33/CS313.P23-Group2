@@ -19,7 +19,7 @@ const Sidebar = ({ currentModule, onModuleChange }) => {
   const { translations } = useLanguage();
 
   const modules = [
-    { id: 'hvac', name: translations.sidebar.hvac, icon: <BuildIcon /> },
+    // { id: 'hvac', name: translations.sidebar.hvac, icon: <BuildIcon /> },
     { id: 'cost', name: translations.sidebar.cost, icon: <AttachMoneyIcon /> },
     { id: 'co2', name: translations.sidebar.co2, icon: <Co2Icon /> },
     { id: 'solar', name: translations.sidebar.solar, icon: <WbSunnyIcon /> },
@@ -30,21 +30,26 @@ const Sidebar = ({ currentModule, onModuleChange }) => {
     <Paper 
       elevation={3} 
       sx={{ 
-        height: '100%', 
+        height: '100vh', // chiếm toàn bộ chiều cao viewport,
+        // width: 150, // chiều rộng cố định
         borderRadius: 2,
-        overflow: 'hidden'
+        overflow: 'auto', // cho phép cuộn khi nội dung dài
+        position: 'sticky', // giúp cố định sidebar khi scroll
+        top: 10, // bám vào top của màn hình
       }}
     >
       <Typography
         variant="subtitle1"
         sx={{
-          p: 2,
+          p: 1,
           fontWeight: 'bold',
+          fontSize: '1.2rem',
           backgroundColor: 'primary.main',
-          color: 'white'
+          color: 'white',
+          textAlign: 'center',
         }}
       >
-        🔧 Select Function
+        🔧Select Function
       </Typography>
 
       <List>

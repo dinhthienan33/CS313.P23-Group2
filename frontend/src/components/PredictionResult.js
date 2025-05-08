@@ -14,14 +14,14 @@ const PredictionResult = ({ results }) => {
   
   // Define color thresholds for visual indicators
   const getHeatingColor = (value) => {
-    if (value < 10) return '#4caf50'; // green
-    if (value < 20) return '#ff9800'; // orange
+    if (value < 15) return '#4caf50'; // green
+    if (value < 25) return '#ff9800'; // orange
     return '#f44336'; // red
   };
 
   const getCoolingColor = (value) => {
-    if (value < 10) return '#4caf50'; // green
-    if (value < 20) return '#ff9800'; // orange
+    if (value < 15) return '#4caf50'; // green
+    if (value < 25) return '#ff9800'; // orange
     return '#f44336'; // red
   };
 
