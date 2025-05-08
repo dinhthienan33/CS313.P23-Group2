@@ -9,7 +9,7 @@ const Header = () => {
   return (
     <Box 
       sx={{ 
-        background: 'linear-gradient(90deg, #1a73e8, #66bb6a)',
+        background: 'linear-gradient(180deg, #1a73e8,rgb(102, 130, 187))',
         padding: '30px',
         textAlign: 'center',
         color: 'white',

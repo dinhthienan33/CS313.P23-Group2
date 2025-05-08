@@ -30,7 +30,7 @@ const Sidebar = ({ currentModule, onModuleChange }) => {
     <Paper 
       elevation={3} 
       sx={{ 
-        height: '100vh', // chiếm toàn bộ chiều cao viewport,
+        height: '100', // chiếm toàn bộ chiều cao viewport,
         // width: 150, // chiều rộng cố định
         borderRadius: 2,
         overflow: 'auto', // cho phép cuộn khi nội dung dài
