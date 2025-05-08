@@ -7,8 +7,11 @@ import {
   CardContent 
 } from '@mui/material';
 import BuildIcon from '@mui/icons-material/Build';
+import { useLanguage } from '../../services/LanguageContext';
 
 const HVACCalculator = ({ heatingLoad, coolingLoad, area }) => {
+  const { translations } = useLanguage();
+  
   // The loads are already in kW, so we can use them directly
   const heatingPowerKw = heatingLoad;
   const coolingPowerKw = coolingLoad;
@@ -28,15 +31,14 @@ const HVACCalculator = ({ heatingLoad, coolingLoad, area }) => {
       >
         <BuildIcon sx={{ mr: 1, color: 'primary.main' }} />
         <Typography variant="h5" component="h2">
-          HVAC System Capacity
+          {translations.modules.hvac.title}
         </Typography>
       </Box>
       
       <Divider sx={{ mb: 3 }} />
       
       <Typography variant="body1" sx={{ mb: 3 }}>
-        Based on your building parameters and the predicted energy loads, here's the 
-        recommended HVAC system capacity for efficient operation:
+        {translations.modules.hvac.description}
       </Typography>
       
       <Box 
@@ -50,17 +52,17 @@ const HVACCalculator = ({ heatingLoad, coolingLoad, area }) => {
         <Card variant="outlined" sx={{ flex: 1 }}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
-              Heating System
+              {translations.modules.hvac.heatingCapacity}
             </Typography>
             <Typography variant="h4" color="error" sx={{ fontWeight: 'bold' }}>
               {heatingPowerKw.toFixed(2)} kW
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Base heating capacity
+              {translations.modules.hvac.btuHeating}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography variant="body2">
-                Total system size: {systemSizeHeating} MW
+                {translations.modules.hvac.systemCapacity}: {systemSizeHeating} MW
               </Typography>
             </Box>
           </CardContent>
@@ -70,17 +72,17 @@ const HVACCalculator = ({ heatingLoad, coolingLoad, area }) => {
         <Card variant="outlined" sx={{ flex: 1 }}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
-              Cooling System
+              {translations.modules.hvac.coolingCapacity}
             </Typography>
             <Typography variant="h4" color="primary" sx={{ fontWeight: 'bold' }}>
               {coolingPowerKw.toFixed(2)} kW
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Base cooling capacity
+              {translations.modules.hvac.btuCooling}
             </Typography>
             <Box sx={{ mt: 2 }}>
               <Typography variant="body2">
-                Total system size: {systemSizeCooling} MW
+                {translations.modules.hvac.systemCapacity}: {systemSizeCooling} MW
               </Typography>
             </Box>
           </CardContent>
@@ -89,8 +91,7 @@ const HVACCalculator = ({ heatingLoad, coolingLoad, area }) => {
 
       <Box sx={{ mt: 3 }}>
         <Typography variant="subtitle2" color="text.secondary">
-          Note: These calculations represent the baseline capacity requirements. 
-          Actual system sizing should account for peak loads, climate zone, and building usage patterns.
+          {translations.modules.hvac.recommendedHVAC}
         </Typography>
       </Box>
     </Box>

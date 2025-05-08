@@ -25,20 +25,22 @@ import {
 
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import SolarPowerIcon from '@mui/icons-material/SolarPower';
+import { useLanguage } from '../../services/LanguageContext';
 
 const panelOptions = [
-  { type: 'Pin Mặt Trời JinKo Tiger Pro 550W', wattage: 550, area: 2.578716, price: 2250000, efficiency: 0.2133},
-  { type: 'Tấm Pin Năng Lượng Mặt Trời 150W Mono', wattage: 150, area: 0.85598, price: 1450000, efficiency: 0.188},
+  { type: 'Pin Mặt Trời JinKo Tiger Pro 550W', wattage: 550, area: 2.578716, price: 2250000, efficiency: 0.2133},
+  { type: 'Tấm Pin Năng Lượng Mặt Trời 150W Mono', wattage: 150, area: 0.85598, price: 1450000, efficiency: 0.188},
   { type: 'Pin mặt trời Canadian 450 Wp', wattage: 450, area: 2.209184, price: 2250000, efficiency: 0.2037},
   { type: 'Pin mặt trời LONGi Solar 450W', wattage: 450, area: 2.173572, price: 3250000, efficiency: 0.207},
-  { type: 'Pin Mặt Trời JinKo Tiger Pro 535W', wattage: 535, area: 2.578716, price: 2200000, efficiency: 0.2075},
+  { type: 'Pin Mặt Trời JinKo Tiger Pro 535W', wattage: 535, area: 2.578716, price: 2200000, efficiency: 0.2075},
   { type: 'Pin Mặt Trời Qcell 420 Wp Korea', wattage: 420, area: 2.1424, price: 3685000, efficiency: 0.196},
   { type: 'Tấm pin mặt trời AE solar', wattage: 370, area: 1.940352, price: 1965000, efficiency: 0.1907},
-  { type: 'Tấm Pin Năng Lượng Mặt Trời 200W Mono', wattage: 200, area: 1.0064, price: 1650000, efficiency: 0.1915}
+  { type: 'Tấm Pin Năng Lượng Mặt Trời 200W Mono', wattage: 200, area: 1.0064, price: 1650000, efficiency: 0.1915}
 ];
 
 
 const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
+  const { translations } = useLanguage();
   const [selectedPanelType, setSelectedPanelType] = useState(panelOptions[0].type);
   const [sunshineHours, setSunshineHours] = useState(4); // Peak Sun Hours
 
@@ -91,14 +93,14 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <WbSunnyIcon sx={{ mr: 1, color: 'primary.main' }} />
         <Typography variant="h5" component="h2">
-          Solar System Advisor
+          {translations.modules.solar.title}
         </Typography>
       </Box>
 
       <Divider sx={{ mb: 3 }} />
 
       <Typography variant="body1" paragraph>
-        Based on your building's energy demand and available roof area, this is your recommended solar configuration:
+        {translations.modules.solar.description}
       </Typography>
 
       <Box sx={{ p: 2, backgroundColor: 'rgba(66, 165, 245, 0.1)', borderRadius: 2, mb: 4 }}>
@@ -108,16 +110,16 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
               <CardContent sx={{ textAlign: 'center' }}>
                 <SolarPowerIcon sx={{ fontSize: 40, color: '#ff9800', mb: 1 }} />
                 <Typography variant="h6" gutterBottom>
-                  Recommended System
+                  {translations.modules.solar.recommendedSystem}
                 </Typography>
                 <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#ff9800' }}>
                   {actualPanels}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom>
-                  Panels Fit on Roof
+                  {translations.modules.solar.panelsNeeded}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {actualDailyOutput.toFixed(1)} kWh daily output
+                  {actualDailyOutput.toFixed(1)} kWh {translations.modules.solar.estimatedProduction}
                 </Typography>
               </CardContent>
             </Card>
@@ -127,22 +129,22 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
             <Card variant="outlined" sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="subtitle1" gutterBottom>
-                  Installation Details
+                  {translations.modules.solar.systemCapacity}
                 </Typography>
                 <Box sx={{ mb: 2 }}>
-                  <Typography variant="body2"><strong>Roof Area:</strong> {roofArea} m²</Typography>
-                  <Typography variant="body2"><strong>Panel Type:</strong> {selectedPanelType}</Typography>
+                  <Typography variant="body2"><strong>{translations.inputLabels.roofArea}:</strong> {roofArea} m²</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.panelsNeeded}:</strong> {selectedPanelType}</Typography>
                   <Typography variant="body2"><strong>Wattage:</strong> {panelWattage} Wp</Typography>
-                  <Typography variant="body2"><strong>Area per Panel:</strong> {panelArea} m²</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.systemCapacity}:</strong> {panelArea} m²</Typography>
                   <Typography variant="body2"><strong>Efficiency:</strong> {(panelEfficiency * 100).toFixed(1)}%</Typography>
-                  <Typography variant="body2"><strong>Output per Panel/day:</strong> {dailyPanelOutput.toFixed(2)} kWh</Typography>
-                  <Typography variant="body2"><strong>Number of Panels:</strong> {actualPanels}</Typography>
-                  <Typography variant="body2"><strong>Daily Energy Need:</strong> {requiredDaily.toFixed(1)} kWh</Typography>
-                  <Typography variant="body2"><strong>Demand Met:</strong> {percentMet.toFixed(1)}%</Typography>
-                  <Typography variant="body2"><strong>Total Cost:</strong> {totalCost.toLocaleString()} VND</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.estimatedProduction}:</strong> {dailyPanelOutput.toFixed(2)} kWh</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.panelsNeeded}:</strong> {actualPanels}</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.estimatedProduction}:</strong> {requiredDaily.toFixed(1)} kWh</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.costSavings}:</strong> {percentMet.toFixed(1)}%</Typography>
+                  <Typography variant="body2"><strong>{translations.modules.solar.breakeven}:</strong> {totalCost.toLocaleString()} VND</Typography>
                 </Box>
                 <Typography variant="body2" color="text.secondary">
-                  {recommendation}
+                  {translations.modules.solar.carbonReduction}
                 </Typography>
               </CardContent>
             </Card>
@@ -151,17 +153,17 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
       </Box>
 
       <Typography variant="h6" gutterBottom>
-        Customize Settings:
+        {translations.modules.solar.systemCapacity}:
       </Typography>
 
       <Grid container spacing={3} sx={{ mb: 2 }}>
         <Grid item xs={12} md={6}>
           <FormControl fullWidth>
-            <InputLabel id="panel-type-label">Panel Type</InputLabel>
+            <InputLabel id="panel-type-label">{translations.modules.solar.panelsNeeded}</InputLabel>
             <Select
               labelId="panel-type-label"
               value={selectedPanelType}
-              label="Solar Panel Type"
+              label={translations.modules.solar.panelsNeeded}
               onChange={(e) => setSelectedPanelType(e.target.value)}
             >
               {panelOptions.map((opt) => (
@@ -175,15 +177,15 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
 
         <Grid item xs={12} md={6}>
           <FormControl fullWidth>
-            <InputLabel id="sunshine-hours-label">Sunlight Hours (PSH)</InputLabel>
+            <InputLabel id="sunshine-hours-label">{translations.modules.solar.estimatedProduction}</InputLabel>
             <Select
               labelId="sunshine-hours-label"
               value={sunshineHours}
-              label="Effective Sunshine Hours"
+              label={translations.modules.solar.estimatedProduction}
               onChange={(e) => setSunshineHours(e.target.value)}
             >
-              <MenuItem value={3}>3 hours (low)</MenuItem>
-              <MenuItem value={4}>4 hours (average)</MenuItem>
+              <MenuItem value={3}>3 hours ({translations.modules.solar.breakeven})</MenuItem>
+              <MenuItem value={4}>4 hours ({translations.modules.solar.costSavings})</MenuItem>
               <MenuItem value={5}>5 hours (good)</MenuItem>
               <MenuItem value={6}>6 hours (excellent)</MenuItem>
             </Select>
@@ -192,48 +194,43 @@ const SolarPanelCalculator = ({ heatingLoad, coolingLoad, roofArea }) => {
       </Grid>
 
       <Typography variant="subtitle2" color="text.secondary">
-        * This is a basic estimation. For detailed planning and installation, please consult with a certified solar energy professional.
+        * {translations.modules.solar.description}
       </Typography>
       <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
-        Demand Coverage Comparison (%)
+        {translations.modules.solar.systemCapacity} (%)
       </Typography>
 
-      <ResponsiveContainer width="100%" height={400}>
-        <BarChart
-          layout="vertical"
-          data={chartData}
-          margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis type="number" domain={[0, 100]} label={{ value: '% Demand Met', position: 'insideBottomRight', offset: -5 }} />
-          <YAxis type="category" dataKey="name" width={200} />
-          <Tooltip />
-          <Bar dataKey="percentMet" fill="#4caf50" name="% Demand Met" />
-        </BarChart>
-      </ResponsiveContainer>
-
-      <Typography variant="h6" gutterBottom sx={{ mt: 6 }}>
-        Total Cost Comparison (mil VND)
-      </Typography>
-
-      <ResponsiveContainer width="100%" height={400}>
-        <BarChart
-          layout="vertical"
-          data={chartData}
-          margin={{ top: 20, right: 30, left: 100, bottom: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis type="number" label={{ value: 'Cost (mil VND)', position: 'insideBottomRight', offset: -5 }} />
-          <YAxis type="category" dataKey="name" width={200} />
-          <Tooltip />
-          <Bar dataKey="totalCost" fill="#f44336" name="Total Cost" />
-        </BarChart>
-      </ResponsiveContainer>
-
-
+      <Box sx={{ height: 300 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={chartData}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 100,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis 
+              dataKey="name" 
+              angle={-45} 
+              textAnchor="end"
+              height={80}
+              interval={0} 
+            />
+            <YAxis yAxisId="left" orientation="left" stroke="#82ca9d" label={{ value: translations.modules.solar.carbonReduction, angle: -90, position: 'insideLeft' }} />
+            <Tooltip formatter={(value, name) => {
+              if (name === "percentMet") return [`${value}%`, translations.modules.solar.carbonReduction];
+              if (name === "totalCost") return [`${value.toLocaleString()} VND`, translations.modules.solar.costSavings];
+              return [value, name];
+            }} />
+            <Bar yAxisId="left" dataKey="percentMet" fill="#82ca9d" />
+          </BarChart>
+        </ResponsiveContainer>
+      </Box>
     </Box>
   );
 };
-
 
 export default SolarPanelCalculator;

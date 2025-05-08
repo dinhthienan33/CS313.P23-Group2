@@ -16,8 +16,11 @@ import {
   InputAdornment
 } from '@mui/material';
 import Co2Icon from '@mui/icons-material/Co2';
+import { useLanguage } from '../../services/LanguageContext';
 
 const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
+  const { translations } = useLanguage();
+  
   // Default emission factor in kg CO₂/kWh
   const [emissionFactor, setEmissionFactor] = useState(0.5);
   
@@ -106,6 +109,9 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
     setHoursPerYear(newValue);
   };
   
+  // Get carbon tip translations
+  const carbonTips = translations.modules.co2.carbonTips;
+  
   return (
     <Box>
       <Box 
@@ -117,14 +123,14 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
       >
         <Co2Icon sx={{ mr: 1, color: 'primary.main' }} />
         <Typography variant="h5" component="h2">
-          CO₂ Emissions Calculation
+          {translations.modules.co2.title}
         </Typography>
       </Box>
       
       <Divider sx={{ mb: 3 }} />
       
       <Typography variant="body1" paragraph>
-        We've calculated your building's estimated carbon emissions based on its energy consumption:
+        {translations.modules.co2.description}
       </Typography>
 
       <Box 
@@ -137,25 +143,25 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
         }}
       >
         <Typography variant="subtitle1" gutterBottom>
-          Base Power Requirements:
+          {translations.modules.co2.heatingEmissions}:
         </Typography>
         <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
           {totalPower.toFixed(2)} kW
         </Typography>
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          Based on heating ({heatingLoad.toFixed(2)} kW) + cooling ({coolingLoad.toFixed(2)} kW)
+          {translations.results.heatingLoad} ({heatingLoad.toFixed(2)} kW) + {translations.results.coolingLoad} ({coolingLoad.toFixed(2)} kW)
         </Typography>
         
         <Divider sx={{ my: 1.5 }} />
         
         <Typography variant="subtitle1" gutterBottom>
-          Annual Energy Consumption:
+          {translations.modules.co2.annualEmissions}:
         </Typography>
         <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
           {formatNumber(Math.round(totalEnergy))} kWh/year
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Based on {hoursPerYear} operating hours per year
+          {hoursPerYear} {translations.modules.co2.emission}
         </Typography>
       </Box>
       
@@ -170,7 +176,7 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
         }}
       >
         <Typography variant="h6" gutterBottom>
-          Annual CO₂ Emissions
+          {translations.modules.co2.annualEmissions}
         </Typography>
         <Typography 
           variant="h2" 
@@ -183,13 +189,13 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
           {formatNumber(Math.round(totalEmission))}
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          kg CO₂ per year
+          kg CO₂ {translations.modules.co2.emission}
         </Typography>
       </Box>
       
       <Box sx={{ mb: 4 }}>
         <Typography variant="h6" gutterBottom>
-          Carbon Intensity Rating
+          {translations.modules.co2.equivalent}
         </Typography>
         
         <Card variant="outlined">
@@ -200,114 +206,118 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
                   width: 60, 
                   height: 60, 
                   borderRadius: '50%', 
-                  backgroundColor: ratingDetails.color,
-                  display: 'flex',
-                  alignItems: 'center',
+                  display: 'flex', 
+                  alignItems: 'center', 
                   justifyContent: 'center',
+                  backgroundColor: ratingDetails.color,
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: '1.5rem',
                   mr: 2
                 }}
               >
-                <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold' }}>
-                  {ratingDetails.rating}
-                </Typography>
+                {ratingDetails.rating}
               </Box>
-              <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="h6">
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                   {ratingDetails.text}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {Math.round(emissionsPerM2)} kg CO₂/m²/year
+                <LinearProgress 
+                  variant="determinate" 
+                  value={ratingDetails.percentage} 
+                  sx={{ 
+                    height: 10, 
+                    borderRadius: 5, 
+                    mt: 1,
+                    '& .MuiLinearProgress-bar': {
+                      backgroundColor: ratingDetails.color
+                    }
+                  }} 
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                  {emissionsPerM2.toFixed(1)} kg CO₂/m² per year
                 </Typography>
               </Box>
             </Box>
             
-            <LinearProgress 
-              variant="determinate" 
-              value={ratingDetails.percentage} 
-              sx={{ 
-                height: 8, 
-                borderRadius: 4,
-                backgroundColor: '#e0e0e0',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: ratingDetails.color
-                }
-              }} 
-            />
+            <Divider sx={{ my: 2 }} />
+            
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              {Math.round(totalEmission / 21)} {translations.modules.co2.trees}
+            </Typography>
+            <Typography variant="body1">
+              {formatNumber(Math.round(totalEmission * 2.5))} {translations.modules.co2.driving}
+            </Typography>
           </CardContent>
         </Card>
       </Box>
       
-      <Typography variant="h6" gutterBottom>
-        Annual Operating Hours:
-      </Typography>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          {translations.modules.co2.tips}
+        </Typography>
+        <Card variant="outlined">
+          <CardContent>
+            <Typography variant="body2" paragraph>
+              • {carbonTips.thermostats}
+            </Typography>
+            <Typography variant="body2" paragraph>
+              • {carbonTips.insulation}
+            </Typography>
+            <Typography variant="body2" paragraph>
+              • {carbonTips.renewable}
+            </Typography>
+            <Typography variant="body2">
+              • {carbonTips.lighting}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Box>
       
-      <Stack spacing={2} direction="row" sx={{ mb: 3 }} alignItems="center">
-        <Slider
-          value={hoursPerYear}
-          onChange={handleHoursChange}
-          min={1000}
-          max={8760}
-          step={100}
-          valueLabelDisplay="auto"
-          aria-labelledby="operating-hours-slider"
-        />
-        <TextField
-          value={hoursPerYear}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            if (!isNaN(value) && value > 0 && value <= 8760) {
-              setHoursPerYear(value);
-            }
-          }}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">hrs</InputAdornment>,
-          }}
-          sx={{ width: 120 }}
-        />
-      </Stack>
-      
-      <Typography variant="h6" gutterBottom>
-        Emission Factor Settings:
-      </Typography>
-      
-      <Stack spacing={2} sx={{ mb: 3 }}>
-        <FormControl fullWidth>
-          <InputLabel id="emission-source-label">Electricity Source/Region</InputLabel>
-          <Select
-            labelId="emission-source-label"
-            value={emissionFactor}
-            label="Electricity Source/Region"
-            onChange={(e) => setEmissionFactor(e.target.value)}
-          >
-            {emissionFactors.map((factor) => (
-              <MenuItem key={factor.value} value={factor.value}>
-                {factor.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        
-        <Slider
-          value={emissionFactor}
-          min={0}
-          max={1.5}
-          step={0.05}
-          onChange={(e, val) => setEmissionFactor(val)}
-          valueLabelDisplay="auto"
-          valueLabelFormat={(value) => `${value} kg CO₂/kWh`}
-          marks={[
-            { value: 0, label: '0' },
-            { value: 0.5, label: '0.5' },
-            { value: 1.0, label: '1.0' },
-            { value: 1.5, label: '1.5' }
-          ]}
-        />
-      </Stack>
-      
-      <Typography variant="subtitle2" color="text.secondary">
-        * CO₂ emission values are calculated based on your building's power requirements, 
-        estimated operating hours, and the carbon emission factor of your electricity source.
-      </Typography>
+      <Box>
+        <Typography variant="h6" gutterBottom>
+          {translations.modules.co2.emission}
+        </Typography>
+        <Card variant="outlined">
+          <CardContent>
+            <Stack spacing={3}>
+              <Box>
+                <FormControl fullWidth>
+                  <InputLabel id="emission-factor-label">Emission Factor</InputLabel>
+                  <Select
+                    labelId="emission-factor-label"
+                    value={emissionFactor}
+                    label="Emission Factor"
+                    onChange={(e) => setEmissionFactor(e.target.value)}
+                  >
+                    {emissionFactors.map((factor) => (
+                      <MenuItem key={factor.value} value={factor.value}>
+                        {factor.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+              
+              <Box>
+                <Typography id="hours-slider" gutterBottom>
+                  Operating Hours per Year: {hoursPerYear}
+                </Typography>
+                <Slider
+                  value={hoursPerYear}
+                  onChange={handleHoursChange}
+                  aria-labelledby="hours-slider"
+                  step={100}
+                  marks
+                  min={1000}
+                  max={8760}
+                  valueLabelDisplay="auto"
+                />
+              </Box>
+            </Stack>
+          </CardContent>
+        </Card>
+      </Box>
     </Box>
   );
 };
