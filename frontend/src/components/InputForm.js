@@ -24,13 +24,19 @@ const InputForm = ({
   const [formValues, setFormValues] = useState(initialValues);
   const { translations } = useLanguage();
 
+  const cities = [
+    "Da Nang (Central)",
+    "Hanoi (Northern)",
+    "Ho Chi Minh City (Southern)",
+  ];
+
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     
     // Convert string values to numbers where appropriate
-    const parsedValue = name !== 'glazingAreaDistribution' ? 
-      parseFloat(value) : parseInt(value, 10);
+    const parsedValue = name !== 'glazingAreaDistribution' && name !== 'city'? 
+      parseFloat(value) : name === 'glazingAreaDistribution' ? parseInt(value, 10) : value;
     
     setFormValues(prev => ({
       ...prev,
@@ -47,6 +53,37 @@ const InputForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <Grid container spacing={3}>
+        {/* City Selection */}
+        <Grid item xs={12}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <Typography variant="subtitle2" color="primary" sx={{ mr: 1, fontWeight: 'bold' }}>
+              City:
+            </Typography>
+            <Typography variant="subtitle2">
+              {translations?.inputLabels?.city || "City"}
+            </Typography>
+          </Box>
+          <FormControl fullWidth variant="outlined" disabled={isLoading}>
+            <InputLabel id="city-selection-label">
+              {translations?.inputLabels?.city || "City"}
+            </InputLabel>
+            <Select
+              labelId="city-selection-label"
+              label={translations?.inputLabels?.city || "City"}
+              name="city"
+              value={formValues.city || ''}
+              onChange={handleChange}
+              required
+            >
+              {cities.map((city) => (
+                <MenuItem key={city} value={city}>
+                  {city}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        
         {/* Relative Compactness */}
         <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
@@ -54,12 +91,12 @@ const InputForm = ({
               X1:
             </Typography>
             <Typography variant="subtitle2">
-              {translations.inputLabels.relativeCompactness}
+              {translations?.inputLabels?.relativeCompactness || "Relative Compactness"}
             </Typography>
           </Box>
           <TextField
             fullWidth
-            label={translations.inputLabels.relativeCompactness}
+            label={translations?.inputLabels?.relativeCompactness || "Relative Compactness"}
             name="relativeCompactness"
             type="number"
             value={formValues.relativeCompactness}
@@ -82,12 +119,12 @@ const InputForm = ({
               X3:
             </Typography>
             <Typography variant="subtitle2">
-              {translations.inputLabels.wallArea}
+              {translations?.inputLabels?.wallArea || "Wall Area (m²)"}
             </Typography>
           </Box>
           <TextField
             fullWidth
-            label={translations.inputLabels.wallArea}
+            label={translations?.inputLabels?.wallArea || "Wall Area (m²)"}
             name="wallArea"
             type="number"
             value={formValues.wallArea}
@@ -109,12 +146,12 @@ const InputForm = ({
               X4:
             </Typography>
             <Typography variant="subtitle2">
-              {translations.inputLabels.roofArea}
+              {translations?.inputLabels?.roofArea || "Roof Area (m²)"}
             </Typography>
           </Box>
           <TextField
             fullWidth
-            label={translations.inputLabels.roofArea}
+            label={translations?.inputLabels?.roofArea || "Roof Area (m²)"}
             name="roofArea"
             type="number"
             value={formValues.roofArea}
@@ -136,12 +173,12 @@ const InputForm = ({
               X5:
             </Typography>
             <Typography variant="subtitle2">
-              {translations.inputLabels.overallHeight}
+              {translations?.inputLabels?.overallHeight || "Overall Height (m)"}
             </Typography>
           </Box>
           <TextField
             fullWidth
-            label={translations.inputLabels.overallHeight}
+            label={translations?.inputLabels?.overallHeight || "Overall Height (m)"}
             name="overallHeight"
             type="number"
             value={formValues.overallHeight}
@@ -163,12 +200,12 @@ const InputForm = ({
               X7:
             </Typography>
             <Typography variant="subtitle2">
-              {translations.inputLabels.glazingArea}
+              {translations?.inputLabels?.glazingArea || "Glazing Area (ratio)"}
             </Typography>
           </Box>
           <TextField
             fullWidth
-            label={translations.inputLabels.glazingArea}
+            label={translations?.inputLabels?.glazingArea || "Glazing Area (ratio)"}
             name="glazingArea"
             type="number"
             value={formValues.glazingArea}
@@ -192,19 +229,20 @@ const InputForm = ({
               X8:
             </Typography>
             <Typography variant="subtitle2">
-              {translations.inputLabels.glazingAreaDistribution}
+              {translations?.inputLabels?.glazingAreaDistribution || "Glazing Area Distribution"}
             </Typography>
           </Box>
           <FormControl fullWidth variant="outlined" disabled={isLoading}>
             <InputLabel id="glazing-distribution-label">
-              {translations.inputLabels.glazingAreaDistribution}
+              {translations?.inputLabels?.glazingAreaDistribution || "Glazing Area Distribution"}
             </InputLabel>
             <Select
               labelId="glazing-distribution-label"
               name="glazingAreaDistribution"
               value={formValues.glazingAreaDistribution}
               onChange={handleChange}
-              label={translations.inputLabels.glazingAreaDistribution}
+              label={translations?.inputLabels?.glazingAreaDistribution || "Glazing Area Distribution"}
+              required
             >
               <MenuItem value={0}>0 - No glass</MenuItem>
               <MenuItem value={1}>1 - North</MenuItem>
@@ -216,15 +254,17 @@ const InputForm = ({
           </FormControl>
         </Grid>
 
-        {/* Model Selection and Submit Button */}
+        {/* Model Selection */}
         <Grid item xs={12} md={6}>
           <FormControl fullWidth variant="outlined" sx={{ mb: 2 }} disabled={isLoading}>
-            <InputLabel id="model-label">Model</InputLabel>
+            <InputLabel id="model-label">
+              {translations?.inputLabels?.model || "Prediction Model"}
+            </InputLabel>
             <Select
               labelId="model-label"
               value={selectedModel}
               onChange={(e) => onModelChange(e.target.value)}
-              label="Model"
+              label={translations?.inputLabels?.model || "Prediction Model"}
             >
               {modelNames.map((model) => (
                 <MenuItem key={model} value={model}>
@@ -242,7 +282,11 @@ const InputForm = ({
             disabled={isLoading}
             sx={{ py: 1.5 }}
           >
-            {translations.buttons.submit}
+            {isLoading ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              translations?.buttons?.submit || "Generate Prediction"
+            )}
           </Button>
         </Grid>
 
@@ -256,7 +300,7 @@ const InputForm = ({
             disabled={isLoading}
             sx={{ py: 1.5 }}
           >
-            {translations.buttons.reset}
+            {translations?.buttons?.reset || "Reset"}
           </Button>
         </Grid>
       </Grid>
@@ -264,4 +308,4 @@ const InputForm = ({
   );
 };
 
-export default InputForm; 
+export default InputForm;
