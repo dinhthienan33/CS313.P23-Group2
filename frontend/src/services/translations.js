@@ -58,8 +58,9 @@ export const en = {
     co2: {
       title: "CO2 Emissions Calculation",
       description: "Calculate carbon dioxide emissions from energy usage",
+      annualElectricity: "Annual Electricity Usage",
       annualEmissions: "Annual CO2 Emissions",
-      heatingEmissions: "Heating Emissions",
+      heatingEmissions: "Total Thermal Load",
       coolingEmissions: "Cooling Emissions",
       equivalent: "This is equivalent to:",
       trees: "trees planted for 1 year",

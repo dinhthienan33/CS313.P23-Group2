@@ -163,7 +163,8 @@ const App = () => {
     const props = {
       heatingLoad: predictionResults.heatingLoad,
       coolingLoad: predictionResults.coolingLoad,
-      area: totalArea
+      area: totalArea,
+      city: buildingParams.city
     };
 
     switch (currentModule) {

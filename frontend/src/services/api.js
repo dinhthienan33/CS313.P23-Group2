@@ -60,6 +60,29 @@ const apiService = {
       // If API call fails, use fallback mock data
       return generateMockPrediction(buildingParams);
     }
+  },
+  
+  /**
+   * Fetch CO2 comparison data
+   * @param {Object} data - Data for CO2 comparison
+   * @returns {Promise} - Promise with CO2 comparison data
+   */
+  getCO2Comparison: async (data) => {
+    try {
+      const BASE_URL = 'http://localhost:5000'; // This should match your actual API URL
+      const response = await fetch(`${BASE_URL}/api/co2-comparison`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error in getCO2Comparison:', error);
+      throw error;
+    }
   }
 };
 
@@ -88,4 +111,4 @@ const generateMockPrediction = (buildingParams) => {
   };
 };
 
-export default apiService; 
+export default apiService;
