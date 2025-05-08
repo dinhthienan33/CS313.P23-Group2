@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -12,19 +12,41 @@ import {
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { useLanguage } from '../../services/LanguageContext';
 
-const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
-  const { translations } = useLanguage();
-  
+// City climate data from the CSV
+const cityClimateData = {
+  "Bien Hoa (Southern)": { hdd: 12.8, cdd: 1504.4 },
+  "Cao Bang (Northern)": { hdd: 2623.5, cdd: 333.9 },
+  "Da Nang (Central)": { hdd: 666.7, cdd: 1049.7 },
+  "Haiphong (Northern)": { hdd: 1955.9, cdd: 558.6 },
+  "Hanoi (Northern)": { hdd: 1709.6, cdd: 867.9 },
+  "Ho Chi Minh City (Southern)": { hdd: 12.8, cdd: 1504.4 },
+  "Hue (Central)": { hdd: 1036.6, cdd: 998.2 },
+  "Qui Nhon (Central)": { hdd: 329.8, cdd: 1203.0 }
+};
+
+// Average values for normalization
+const CDD_AVG = 1000;
+const HDD_AVG = 800;
+
+const CostEstimator = ({ heatingLoad, coolingLoad, area, city }) => {
   // Default energy price in VND/kWh
   const [pricePerKwh, setPricePerKwh] = useState(3000);
-  // Default operating hours per year
-  const [hoursPerYear, setHoursPerYear] = useState(2000);
-  // Default hours per day 
-  const [hoursPerDay, setHoursPerDay] = useState(8);
+  const [totalEnergy, setTotalEnergy] = useState(0);
   
-  // Calculate total energy consumption and cost
-  // Convert kW (power) to kWh (energy) by multiplying by hours
-  const totalEnergy = (heatingLoad + coolingLoad) * hoursPerYear; // kWh/year
+  // Calculate total energy consumption based on city climate data
+  useEffect(() => {
+    if (city && cityClimateData[city]) {
+      const { hdd, cdd } = cityClimateData[city];
+      const energy = (coolingLoad * area * (cdd / CDD_AVG)) + (heatingLoad * area * (hdd / HDD_AVG));
+      setTotalEnergy(energy);
+    } else {
+      // Fallback to original calculation if city data not available
+      setTotalEnergy((heatingLoad + coolingLoad) * area);
+    }
+  }, [heatingLoad, coolingLoad, area, city]);
+  
+  // Calculate cost
+
   const estimatedCost = totalEnergy * pricePerKwh; // VND/year
   
   // Format number with commas as thousands separators
@@ -283,8 +305,13 @@ const CostEstimator = ({ heatingLoad, coolingLoad, area }) => {
       </Box>
 
       
-      <Typography variant="body2" color="text.secondary">
-        * {translations.modules.cost.savingTips}: {translations.modules.cost.description}
+
+      <Typography variant="subtitle2" color="text.secondary" paragraph>
+        * Calculations are based on the predicted heating load of {heatingLoad.toFixed(2)} kWh/m² 
+        and cooling load of {coolingLoad.toFixed(2)} kWh/m², applied to your building's total area of {area.toFixed(2)} m².
+        {city && cityClimateData[city] && (
+          <> Energy adjusted for climate data: {city} (HDD: {cityClimateData[city].hdd}, CDD: {cityClimateData[city].cdd}).</>
+        )}
       </Typography>
     </Box>
   );

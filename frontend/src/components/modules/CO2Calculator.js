@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -12,20 +12,34 @@ import {
   Select,
   MenuItem,
   LinearProgress,
-  TextField,
-  InputAdornment
+  CircularProgress
 } from '@mui/material';
 import Co2Icon from '@mui/icons-material/Co2';
-import { useLanguage } from '../../services/LanguageContext';
+import apiService from '../../services/api'; // Import API service
 
-const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
-  const { translations } = useLanguage();
-  
+// City climate data from the CSV
+const cityClimateData = {
+  "Bien Hoa (Southern)": { hdd: 12.8, cdd: 1504.4 },
+  "Cao Bang (Northern)": { hdd: 2623.5, cdd: 333.9 },
+  "Da Nang (Central)": { hdd: 666.7, cdd: 1049.7 },
+  "Haiphong (Northern)": { hdd: 1955.9, cdd: 558.6 },
+  "Hanoi (Northern)": { hdd: 1709.6, cdd: 867.9 },
+  "Ho Chi Minh City (Southern)": { hdd: 12.8, cdd: 1504.4 },
+  "Hue (Central)": { hdd: 1036.6, cdd: 998.2 },
+  "Qui Nhon (Central)": { hdd: 329.8, cdd: 1203.0 }
+};
+
+// Average values for normalization
+const CDD_AVG = 1000;
+const HDD_AVG = 800;
+
+const CO2Calculator = ({ heatingLoad, coolingLoad, area, city }) => {
   // Default emission factor in kg CO₂/kWh
   const [emissionFactor, setEmissionFactor] = useState(0.5);
-  
-  // Default operating hours per year
-  const [hoursPerYear, setHoursPerYear] = useState(2000);
+  const [totalEnergy, setTotalEnergy] = useState(0);
+  const [comparisonData, setComparisonData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Predefined emission factors for different regions/energy sources
   const emissionFactors = [
@@ -35,11 +49,55 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
     { value: 1.0, label: 'Oil/Diesel (1.0 kg CO₂/kWh)' }
   ];
   
-  // Calculate total energy and emissions
-  // Convert from kW (power) to kWh (energy) by multiplying by hours
-  const totalPower = heatingLoad + coolingLoad; // kW
-  const totalEnergy = totalPower * hoursPerYear; // kWh/year
+
+  // Calculate total energy consumption based on city climate data
+  useEffect(() => {
+    if (city && cityClimateData[city]) {
+      const { hdd, cdd } = cityClimateData[city];
+      const energy = (coolingLoad * area * (cdd / CDD_AVG)) + (heatingLoad * area * (hdd / HDD_AVG));
+      setTotalEnergy(energy);
+    } else {
+      // Fallback to original calculation if city data not available
+      setTotalEnergy((heatingLoad + coolingLoad) * area);
+    }
+  }, [heatingLoad, coolingLoad, area, city]);
+  
+  // Calculate total emissions
+
   const totalEmission = totalEnergy * emissionFactor; // kg CO₂/year
+  
+  // Fetch CO2 comparison data when totalEmission or city changes
+  useEffect(() => {
+    // Only fetch if we have both city and emission data
+    if (city && totalEmission > 0) {
+      fetchComparisonData();
+    }
+  }, [totalEmission, city]);
+  
+  // Function to fetch comparison data from API
+  const fetchComparisonData = async () => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Assume apiService has a method to call the new endpoint
+      const response = await apiService.getCO2Comparison({
+        city: city,
+        buildingCO2: Math.round(totalEmission)
+      });
+      
+      if (response.success) {
+        setComparisonData(response);
+      } else {
+        setError(response.error || 'Failed to fetch comparison data');
+      }
+    } catch (err) {
+      console.error('Error fetching CO2 comparison:', err);
+      setError('Failed to fetch comparison data');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   // Calculate carbon intensity rating (based on emissions per m²)
   const emissionsPerM2 = totalEmission / area;
@@ -252,74 +310,91 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area }) => {
         </Card>
       </Box>
       
+
+      {/* CO2 Comparison Chart Section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h6" gutterBottom>
-          {translations.modules.co2.tips}
+          Regional CO₂ Emissions Comparison
         </Typography>
+        
         <Card variant="outlined">
           <CardContent>
-            <Typography variant="body2" paragraph>
-              • {carbonTips.thermostats}
-            </Typography>
-            <Typography variant="body2" paragraph>
-              • {carbonTips.insulation}
-            </Typography>
-            <Typography variant="body2" paragraph>
-              • {carbonTips.renewable}
-            </Typography>
-            <Typography variant="body2">
-              • {carbonTips.lighting}
-            </Typography>
+            {isLoading ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                <CircularProgress />
+              </Box>
+            ) : error ? (
+              <Typography color="error">{error}</Typography>
+            ) : comparisonData ? (
+              <>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Comparing your building with average home in {comparisonData.reference_city}
+                  </Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center' }}>
+                  {comparisonData.chart_image && (
+                    <img 
+                      src={`data:image/png;base64,${comparisonData.chart_image}`} 
+                      alt="CO2 Emissions Comparison" 
+                      style={{ maxWidth: '100%', height: 'auto' }}
+                    />
+                  )}
+                </Box>
+              </>
+            ) : (
+              <Typography>No comparison data available</Typography>
+            )}
           </CardContent>
         </Card>
       </Box>
       
-      <Box>
-        <Typography variant="h6" gutterBottom>
-          {translations.modules.co2.emission}
-        </Typography>
-        <Card variant="outlined">
-          <CardContent>
-            <Stack spacing={3}>
-              <Box>
-                <FormControl fullWidth>
-                  <InputLabel id="emission-factor-label">Emission Factor</InputLabel>
-                  <Select
-                    labelId="emission-factor-label"
-                    value={emissionFactor}
-                    label="Emission Factor"
-                    onChange={(e) => setEmissionFactor(e.target.value)}
-                  >
-                    {emissionFactors.map((factor) => (
-                      <MenuItem key={factor.value} value={factor.value}>
-                        {factor.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-              
-              <Box>
-                <Typography id="hours-slider" gutterBottom>
-                  Operating Hours per Year: {hoursPerYear}
-                </Typography>
-                <Slider
-                  value={hoursPerYear}
-                  onChange={handleHoursChange}
-                  aria-labelledby="hours-slider"
-                  step={100}
-                  marks
-                  min={1000}
-                  max={8760}
-                  valueLabelDisplay="auto"
-                />
-              </Box>
-            </Stack>
-          </CardContent>
-        </Card>
-      </Box>
+      <Typography variant="h6" gutterBottom>
+        Emission Factor Settings:
+      </Typography>
+      
+      <Stack spacing={2} sx={{ mb: 3 }}>
+        <FormControl fullWidth>
+          <InputLabel id="emission-factor-label">Energy Source</InputLabel>
+          <Select
+            labelId="emission-factor-label"
+            value={emissionFactor}
+            label="Energy Source"
+            onChange={(e) => setEmissionFactor(e.target.value)}
+          >
+            {emissionFactors.map((factor) => (
+              <MenuItem key={factor.value} value={factor.value}>
+                {factor.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        
+        <Slider
+          value={emissionFactor}
+          onChange={(_, newValue) => setEmissionFactor(newValue)}
+          min={0}
+          max={1}
+          step={0.1}
+          marks={[
+            { value: 0, label: '0' },
+            { value: 0.5, label: '0.5' },
+            { value: 1, label: '1.0' }
+          ]}
+          valueLabelDisplay="auto"
+          valueLabelFormat={(value) => `${value} kg CO₂/kWh`}
+        />
+      </Stack>
+      
+      <Typography variant="subtitle2" color="text.secondary" paragraph>
+        * Calculations are based on total energy consumption of {totalEnergy.toFixed(2)} kWh/year
+        and the selected emission factor of {emissionFactor} kg CO₂/kWh.
+        {city && cityClimateData[city] && (
+          <> Energy adjusted for climate data: {city} (HDD: {cityClimateData[city].hdd}, CDD: {cityClimateData[city].cdd}).</>
+        )}
+      </Typography>
     </Box>
   );
 };
 
-export default CO2Calculator; 
+export default CO2Calculator;

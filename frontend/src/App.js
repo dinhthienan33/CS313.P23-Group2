@@ -47,7 +47,8 @@ const App = () => {
     roofArea: 110.25,
     overallHeight: 7.00,
     glazingArea: 0.0,
-    glazingAreaDistribution: 0
+    glazingAreaDistribution: 0,
+    city: ''
   });
   const [predictionResults, setPredictionResults] = useState(null);
   const [selectedModel, setSelectedModel] = useState('XGBoost');
@@ -163,7 +164,8 @@ const App = () => {
     const props = {
       heatingLoad: predictionResults.heatingLoad,
       coolingLoad: predictionResults.coolingLoad,
-      area: totalArea
+      area: totalArea,
+      city: buildingParams.city // Pass city to modules
     };
 
     switch (currentModule) {
@@ -213,10 +215,17 @@ const App = () => {
               
                 <Paper 
                   elevation={3} 
-                  sx={{ p: 3, mb: 3, borderRadius: 2 }}
+
+                  sx={{ 
+                    p: 3, 
+                    mb: 3, 
+                    borderRadius: 2, 
+                    bgcolor: 'error.light',
+                    color: 'error.contrastText'
+                  }}
                 >
-                  <Typography variant="h5" component="h2" gutterBottom>
-                    🔶 Enter Building Parameters
+                  <Typography component="p">
+                    {error}
                   </Typography>
                   <InputForm 
                     onSubmit={handleFormSubmit} 
@@ -237,14 +246,12 @@ const App = () => {
                       p: 3 
                     }}
                   >
-                    <CircularProgress />
-                    <Typography sx={{ ml: 2 }}>
-                      Processing prediction...
-                    </Typography>
-                  </Box>
-                )}
-
-                {error && (
+                    <PredictionResult 
+                      results={predictionResults} 
+                      buildingParams={buildingParams}
+                    />
+                  </Paper>
+                  
                   <Paper 
                     elevation={3} 
                     sx={{ 
@@ -286,4 +293,4 @@ const App = () => {
   );
 };
 
-export default App; 
+export default App;
