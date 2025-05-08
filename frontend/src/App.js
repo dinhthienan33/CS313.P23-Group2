@@ -21,6 +21,7 @@ import CO2Calculator from './components/modules/CO2Calculator';
 import SolarPanelCalculator from './components/modules/SolarPanelCalculator';
 import EfficiencyClassifier from './components/modules/EfficiencyClassifier';
 import apiService from './services/api';
+import { LanguageProvider } from './services/LanguageContext';
 
 // Create theme
 const theme = createTheme({
@@ -184,69 +185,37 @@ const App = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Header />
-        
-        <Container sx={{ mt: 3, mb: 3, display: 'flex', flexGrow: 1 }}>
-          <Box sx={{ display: 'flex', flexGrow: 1, gap: 3 }}>
-            {/* Sidebar */}
-            <Box sx={{ width: 250 }}>
-              <Sidebar 
-                currentModule={currentModule} 
-                onModuleChange={handleModuleChange} 
-              />
-            </Box>
-            
-            {/* Main content */}
-            <Box sx={{ flexGrow: 1 }}>
-              {/* API Status Alert */}
-              {apiStatus.status !== 'connected' && (
-                <Alert 
-                  severity={apiStatus.status === 'checking' ? 'info' : apiStatus.status} 
-                  sx={{ mb: 3 }}
-                >
-                  {apiStatus.message}
-                </Alert>
-              )}
-            
-              <Paper 
-                elevation={3} 
-                sx={{ p: 3, mb: 3, borderRadius: 2 }}
-              >
-                <Typography variant="h5" component="h2" gutterBottom>
-                  🔶 Enter Building Parameters
-                </Typography>
-                <InputForm 
-                  onSubmit={handleFormSubmit} 
-                  initialValues={buildingParams}
-                  modelNames={modelNames}
-                  selectedModel={selectedModel}
-                  onModelChange={handleModelChange}
-                  isLoading={isLoading}
+    <LanguageProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <Header />
+          
+          <Container sx={{ mt: 3, mb: 3, display: 'flex', flexGrow: 1 }}>
+            <Box sx={{ display: 'flex', flexGrow: 1, gap: 3 }}>
+              {/* Sidebar */}
+              <Box sx={{ width: 250 }}>
+                <Sidebar 
+                  currentModule={currentModule} 
+                  onModuleChange={handleModuleChange} 
                 />
-              </Paper>
-
-              {isLoading && (
-                <Box 
-                  sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center',
-                    p: 3 
-                  }}
-                >
-                  <CircularProgress />
-                  <Typography sx={{ ml: 2 }}>
-                    Processing prediction...
-                  </Typography>
-                </Box>
-              )}
-
-              {error && (
+              </Box>
+              
+              {/* Main content */}
+              <Box sx={{ flexGrow: 1 }}>
+                {/* API Status Alert */}
+                {apiStatus.status !== 'connected' && (
+                  <Alert 
+                    severity={apiStatus.status === 'checking' ? 'info' : apiStatus.status} 
+                    sx={{ mb: 3 }}
+                  >
+                    {apiStatus.message}
+                  </Alert>
+                )}
+              
                 <Paper 
                   elevation={3} 
+
                   sx={{ 
                     p: 3, 
                     mb: 3, 
@@ -258,14 +227,24 @@ const App = () => {
                   <Typography component="p">
                     {error}
                   </Typography>
+                  <InputForm 
+                    onSubmit={handleFormSubmit} 
+                    initialValues={buildingParams}
+                    modelNames={modelNames}
+                    selectedModel={selectedModel}
+                    onModelChange={handleModelChange}
+                    isLoading={isLoading}
+                  />
                 </Paper>
-              )}
 
-              {predictionResults && !isLoading && (
-                <>
-                  <Paper 
-                    elevation={3} 
-                    sx={{ p: 3, mb: 3, borderRadius: 2 }}
+                {isLoading && (
+                  <Box 
+                    sx={{ 
+                      display: 'flex', 
+                      justifyContent: 'center', 
+                      alignItems: 'center',
+                      p: 3 
+                    }}
                   >
                     <PredictionResult 
                       results={predictionResults} 
@@ -275,17 +254,42 @@ const App = () => {
                   
                   <Paper 
                     elevation={3} 
-                    sx={{ p: 3, borderRadius: 2 }}
+                    sx={{ 
+                      p: 3, 
+                      mb: 3, 
+                      borderRadius: 2,
+                      backgroundColor: '#ffebee'
+                    }}
                   >
-                    {renderModule()}
+                    <Typography color="error">
+                      {error}
+                    </Typography>
                   </Paper>
-                </>
-              )}
+                )}
+
+                {predictionResults && !isLoading && (
+                  <>
+                    <Paper 
+                      elevation={3} 
+                      sx={{ p: 3, mb: 3, borderRadius: 2 }}
+                    >
+                      <PredictionResult results={predictionResults} />
+                    </Paper>
+                    
+                    <Paper 
+                      elevation={3} 
+                      sx={{ p: 3, borderRadius: 2 }}
+                    >
+                      {renderModule()}
+                    </Paper>
+                  </>
+                )}
+              </Box>
             </Box>
-          </Box>
-        </Container>
-      </Box>
-    </ThemeProvider>
+          </Container>
+        </Box>
+      </ThemeProvider>
+    </LanguageProvider>
   );
 };
 

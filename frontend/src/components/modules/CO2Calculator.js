@@ -49,6 +49,7 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area, city }) => {
     { value: 1.0, label: 'Oil/Diesel (1.0 kg CO₂/kWh)' }
   ];
   
+
   // Calculate total energy consumption based on city climate data
   useEffect(() => {
     if (city && cityClimateData[city]) {
@@ -62,6 +63,7 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area, city }) => {
   }, [heatingLoad, coolingLoad, area, city]);
   
   // Calculate total emissions
+
   const totalEmission = totalEnergy * emissionFactor; // kg CO₂/year
   
   // Fetch CO2 comparison data when totalEmission or city changes
@@ -159,6 +161,14 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area, city }) => {
   const formatNumber = (number) => {
     return number.toLocaleString('en-US');
   };
+
+  // Handle hours slider change
+  const handleHoursChange = (event, newValue) => {
+    setHoursPerYear(newValue);
+  };
+  
+  // Get carbon tip translations
+  const carbonTips = translations.modules.co2.carbonTips;
   
   return (
     <Box>
@@ -171,15 +181,47 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area, city }) => {
       >
         <Co2Icon sx={{ mr: 1, color: 'primary.main' }} />
         <Typography variant="h5" component="h2">
-          CO₂ Emissions Calculation
+          {translations.modules.co2.title}
         </Typography>
       </Box>
       
       <Divider sx={{ mb: 3 }} />
       
       <Typography variant="body1" paragraph>
-        We've calculated your building's estimated carbon emissions based on its energy consumption:
+        {translations.modules.co2.description}
       </Typography>
+
+      <Box 
+        sx={{ 
+          backgroundColor: 'background.paper', 
+          p: 2, 
+          borderRadius: 2,
+          mb: 3,
+          boxShadow: 1
+        }}
+      >
+        <Typography variant="subtitle1" gutterBottom>
+          {translations.modules.co2.heatingEmissions}:
+        </Typography>
+        <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+          {totalPower.toFixed(2)} kW
+        </Typography>
+        <Typography variant="body2" color="text.secondary" gutterBottom>
+          {translations.results.heatingLoad} ({heatingLoad.toFixed(2)} kW) + {translations.results.coolingLoad} ({coolingLoad.toFixed(2)} kW)
+        </Typography>
+        
+        <Divider sx={{ my: 1.5 }} />
+        
+        <Typography variant="subtitle1" gutterBottom>
+          {translations.modules.co2.annualEmissions}:
+        </Typography>
+        <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+          {formatNumber(Math.round(totalEnergy))} kWh/year
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {hoursPerYear} {translations.modules.co2.emission}
+        </Typography>
+      </Box>
       
       <Box 
         sx={{ 
@@ -192,7 +234,7 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area, city }) => {
         }}
       >
         <Typography variant="h6" gutterBottom>
-          Annual CO₂ Emissions
+          {translations.modules.co2.annualEmissions}
         </Typography>
         <Typography 
           variant="h2" 
@@ -205,13 +247,13 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area, city }) => {
           {formatNumber(Math.round(totalEmission))}
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          kg CO₂ per year
+          kg CO₂ {translations.modules.co2.emission}
         </Typography>
       </Box>
       
       <Box sx={{ mb: 4 }}>
         <Typography variant="h6" gutterBottom>
-          Carbon Intensity Rating
+          {translations.modules.co2.equivalent}
         </Typography>
         
         <Card variant="outlined">
@@ -222,43 +264,53 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area, city }) => {
                   width: 60, 
                   height: 60, 
                   borderRadius: '50%', 
-                  backgroundColor: ratingDetails.color,
-                  display: 'flex',
-                  alignItems: 'center',
+                  display: 'flex', 
+                  alignItems: 'center', 
                   justifyContent: 'center',
+                  backgroundColor: ratingDetails.color,
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: '1.5rem',
                   mr: 2
                 }}
               >
-                <Typography variant="h4" sx={{ color: 'white', fontWeight: 'bold' }}>
-                  {ratingDetails.rating}
-                </Typography>
+                {ratingDetails.rating}
               </Box>
-              <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="h6">
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
                   {ratingDetails.text}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {Math.round(emissionsPerM2)} kg CO₂/m²/year
+                <LinearProgress 
+                  variant="determinate" 
+                  value={ratingDetails.percentage} 
+                  sx={{ 
+                    height: 10, 
+                    borderRadius: 5, 
+                    mt: 1,
+                    '& .MuiLinearProgress-bar': {
+                      backgroundColor: ratingDetails.color
+                    }
+                  }} 
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                  {emissionsPerM2.toFixed(1)} kg CO₂/m² per year
                 </Typography>
               </Box>
             </Box>
             
-            <LinearProgress 
-              variant="determinate" 
-              value={ratingDetails.percentage} 
-              sx={{ 
-                height: 8, 
-                borderRadius: 4,
-                backgroundColor: '#e0e0e0',
-                '& .MuiLinearProgress-bar': {
-                  backgroundColor: ratingDetails.color
-                }
-              }} 
-            />
+            <Divider sx={{ my: 2 }} />
+            
+            <Typography variant="body1" sx={{ mb: 1 }}>
+              {Math.round(totalEmission / 21)} {translations.modules.co2.trees}
+            </Typography>
+            <Typography variant="body1">
+              {formatNumber(Math.round(totalEmission * 2.5))} {translations.modules.co2.driving}
+            </Typography>
           </CardContent>
         </Card>
       </Box>
       
+
       {/* CO2 Comparison Chart Section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h6" gutterBottom>

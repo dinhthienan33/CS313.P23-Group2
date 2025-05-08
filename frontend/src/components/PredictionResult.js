@@ -7,18 +7,21 @@ import {
 } from '@mui/material';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
+import { useLanguage } from '../services/LanguageContext';
 
 const PredictionResult = ({ results }) => {
+  const { translations } = useLanguage();
+  
   // Define color thresholds for visual indicators
   const getHeatingColor = (value) => {
-    if (value < 10) return '#4caf50'; // green
-    if (value < 20) return '#ff9800'; // orange
+    if (value < 15) return '#4caf50'; // green
+    if (value < 25) return '#ff9800'; // orange
     return '#f44336'; // red
   };
 
   const getCoolingColor = (value) => {
-    if (value < 10) return '#4caf50'; // green
-    if (value < 20) return '#ff9800'; // orange
+    if (value < 15) return '#4caf50'; // green
+    if (value < 25) return '#ff9800'; // orange
     return '#f44336'; // red
   };
 
@@ -26,7 +29,7 @@ const PredictionResult = ({ results }) => {
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Typography variant="h5" component="h2" sx={{ flexGrow: 1 }}>
-          🎯 Prediction Results
+          🎯 {translations.results.title}
         </Typography>
         <Chip 
           label={results.model} 
@@ -68,7 +71,7 @@ const PredictionResult = ({ results }) => {
             />
           </Box>
           <Typography variant="h6" gutterBottom>
-            Heating Load
+            {translations.results.heatingLoad} (Y1)
           </Typography>
           <Typography 
             variant="h3" 
@@ -81,7 +84,7 @@ const PredictionResult = ({ results }) => {
             {results.heatingLoad.toFixed(2)}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            kWh
+            kW
           </Typography>
         </Box>
 
@@ -106,7 +109,7 @@ const PredictionResult = ({ results }) => {
             />
           </Box>
           <Typography variant="h6" gutterBottom>
-            Cooling Load
+            {translations.results.coolingLoad} (Y2)
           </Typography>
           <Typography 
             variant="h3" 
@@ -119,7 +122,7 @@ const PredictionResult = ({ results }) => {
             {results.coolingLoad.toFixed(2)}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            kWh
+            kW
           </Typography>
         </Box>
       </Box>

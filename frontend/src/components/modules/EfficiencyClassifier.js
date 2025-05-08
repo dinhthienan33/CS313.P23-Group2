@@ -9,8 +9,11 @@ import {
   Grid 
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import { useLanguage } from '../../services/LanguageContext';
 
 const EfficiencyClassifier = ({ heatingLoad, coolingLoad, area }) => {
+  const { translations } = useLanguage();
+  
   // Function to determine energy efficiency rating
   const getEfficiencyRating = () => {
     const totalLoad = heatingLoad + coolingLoad;
@@ -64,26 +67,28 @@ const EfficiencyClassifier = ({ heatingLoad, coolingLoad, area }) => {
   // Calculate total energy consumption
   const totalEnergy = (heatingLoad + coolingLoad) * area; // kWh/year
   
-  // Generate improvement recommendations based on the rating
+  // Generate improvement recommendations based on the rating using translations
   const getImprovementRecommendations = () => {
+    const tips = translations.modules.efficiency.recommendationTips;
+    
     if (rating.rating === 'A') {
       return [
-        'Maintain current systems and consider renewable energy sources',
-        'Implement smart building management systems for further optimization'
+        tips.maintain,
+        tips.smartSystems
       ];
     } else if (rating.rating === 'B') {
       return [
-        'Improve wall and roof insulation',
-        'Upgrade to more efficient HVAC systems',
-        'Consider smart thermostats and zoning'
+        tips.insulation,
+        tips.hvacUpgrade,
+        tips.thermostats
       ];
     } else {
       return [
-        'Significantly improve building envelope insulation',
-        'Replace windows with high-performance glazing',
-        'Install energy recovery ventilation systems',
-        'Upgrade to high-efficiency HVAC equipment',
-        'Consider building orientation and shading for future designs'
+        tips.envelope,
+        tips.windows,
+        tips.ventilation,
+        tips.equipment,
+        tips.orientation
       ];
     }
   };
@@ -101,15 +106,14 @@ const EfficiencyClassifier = ({ heatingLoad, coolingLoad, area }) => {
       >
         <HomeIcon sx={{ mr: 1, color: 'primary.main' }} />
         <Typography variant="h5" component="h2">
-          Building Efficiency Classification
+          {translations.modules.efficiency.title}
         </Typography>
       </Box>
       
       <Divider sx={{ mb: 3 }} />
       
       <Typography variant="body1" paragraph>
-        Based on the predicted heating and cooling loads, your building has been 
-        classified with the following energy efficiency rating:
+        {translations.modules.efficiency.description}
       </Typography>
       
       <Card 
@@ -170,7 +174,7 @@ const EfficiencyClassifier = ({ heatingLoad, coolingLoad, area }) => {
               
               <Box sx={{ mt: 2 }}>
                 <Typography variant="body2" gutterBottom>
-                  Energy Performance
+                  {translations.modules.efficiency.efficiencyScore}
                 </Typography>
                 <LinearProgress 
                   variant="determinate" 
@@ -191,8 +195,8 @@ const EfficiencyClassifier = ({ heatingLoad, coolingLoad, area }) => {
                     justifyContent: 'space-between' 
                   }}
                 >
-                  <Typography variant="caption">Highest Efficiency</Typography>
-                  <Typography variant="caption">Lowest Efficiency</Typography>
+                  <Typography variant="caption">{translations.modules.efficiency.classification}</Typography>
+                  <Typography variant="caption">{translations.modules.efficiency.potentialUpgrade}</Typography>
                 </Box>
               </Box>
             </Grid>
@@ -200,62 +204,75 @@ const EfficiencyClassifier = ({ heatingLoad, coolingLoad, area }) => {
         </CardContent>
       </Card>
       
-      <Typography variant="h6" gutterBottom>
-        Building Performance Summary
-      </Typography>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          {translations.modules.efficiency.buildingRating}
+        </Typography>
+        <Card variant="outlined">
+          <CardContent>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    {translations.results.heatingLoad}
+                  </Typography>
+                  <Typography variant="h5">
+                    {heatingLoad.toFixed(2)} kW
+                  </Typography>
+                </Box>
+                
+                <Box>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    {translations.results.coolingLoad}
+                  </Typography>
+                  <Typography variant="h5">
+                    {coolingLoad.toFixed(2)} kW
+                  </Typography>
+                </Box>
+              </Grid>
+              
+              <Grid item xs={12} md={6}>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    {translations.modules.efficiency.classification}
+                  </Typography>
+                  <Typography variant="h5" sx={{ color: rating.color, fontWeight: 'bold' }}>
+                    {rating.rating}
+                  </Typography>
+                </Box>
+                
+                <Box>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                    {translations.modules.efficiency.efficiencyScore}
+                  </Typography>
+                  <Typography variant="h5">
+                    {(100 - rating.percentage).toFixed(0)}%
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+      </Box>
       
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={4}>
-          <Box sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-              Heating Load
-            </Typography>
-            <Typography variant="h5" sx={{ fontWeight: 'medium' }}>
-              {heatingLoad.toFixed(2)} kWh/m²
-            </Typography>
-          </Box>
-        </Grid>
-        
-        <Grid item xs={12} sm={4}>
-          <Box sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-              Cooling Load
-            </Typography>
-            <Typography variant="h5" sx={{ fontWeight: 'medium' }}>
-              {coolingLoad.toFixed(2)} kWh/m²
-            </Typography>
-          </Box>
-        </Grid>
-        
-        <Grid item xs={12} sm={4}>
-          <Box sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-              Total Energy
-            </Typography>
-            <Typography variant="h5" sx={{ fontWeight: 'medium' }}>
-              {totalEnergy.toFixed(2)} kWh/year
-            </Typography>
-          </Box>
-        </Grid>
-      </Grid>
-      
-      <Typography variant="h6" gutterBottom>
-        Improvement Recommendations
-      </Typography>
-      
-      <Card variant="outlined" sx={{ mb: 2 }}>
-        <CardContent>
-          <ul style={{ paddingLeft: '20px', marginBottom: 0 }}>
-            {recommendations.map((recommendation, index) => (
-              <li key={index}>
-                <Typography variant="body1" paragraph={index < recommendations.length - 1}>
-                  {recommendation}
-                </Typography>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
+      <Box>
+        <Typography variant="h6" gutterBottom>
+          {translations.modules.efficiency.recommendations}
+        </Typography>
+        <Card variant="outlined">
+          <CardContent>
+            <ul style={{ paddingLeft: '1.5rem', marginTop: 0, marginBottom: 0 }}>
+              {recommendations.map((rec, index) => (
+                <li key={index}>
+                  <Typography variant="body1" gutterBottom>
+                    {rec}
+                  </Typography>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      </Box>
     </Box>
   );
 };
