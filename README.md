@@ -8,8 +8,8 @@ This project is a comprehensive system for predicting building energy efficiency
 - **Institution**: University of Information Technology (UIT)
 - **Semester**: Spring 2024
 
-## 👥 Team Members
-- Huỳnh Trọng Nghĩa (22520003) - Group 2
+## 👥 Team Members - Group 2
+- Huỳnh Trọng Nghĩa (22520003)
 - Đinh Thiên Ân (22520010)
 - Nguyễn Ân (22520019)
 - Nguyễn Hoàng Gia An (22520021)
