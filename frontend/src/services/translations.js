@@ -127,11 +127,11 @@ export const vi = {
   appSubtitle: "Nhập thông số kiến trúc để dự đoán hiệu suất năng lượng",
   formTitle: "Nhập Thông Số Tòa Nhà",
   inputLabels: {
-    relativeCompactness: "Mức Độ Gọn Gàng",
+    relativeCompactness: "Độ Đặc Tương Đối",
     wallArea: "Diện Tích Tường (m²)",
     roofArea: "Diện Tích Mái (m²)",
     overallHeight: "Chiều Cao Tổng Thể (m)",
-    glazingArea: "Diện Tích Kính",
+    glazingArea: "Tỉ lệ Diện Tích Kính",
     glazingAreaDistribution: "Phân Phối Diện Tích Kính"
   },
   sidebar: {

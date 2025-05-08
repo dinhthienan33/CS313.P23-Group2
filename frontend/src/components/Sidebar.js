@@ -20,10 +20,10 @@ const Sidebar = ({ currentModule, onModuleChange }) => {
 
   const modules = [
     // { id: 'hvac', name: translations.sidebar.hvac, icon: <BuildIcon /> },
+    { id: 'efficiency', name: translations.sidebar.efficiency, icon: <HomeIcon /> },
     { id: 'cost', name: translations.sidebar.cost, icon: <AttachMoneyIcon /> },
     { id: 'co2', name: translations.sidebar.co2, icon: <Co2Icon /> },
-    { id: 'solar', name: translations.sidebar.solar, icon: <WbSunnyIcon /> },
-    { id: 'efficiency', name: translations.sidebar.efficiency, icon: <HomeIcon /> }
+    { id: 'solar', name: translations.sidebar.solar, icon: <WbSunnyIcon /> }
   ];
 
   return (

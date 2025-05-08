@@ -18,7 +18,7 @@ const EfficiencyClassifier = ({ heatingLoad, coolingLoad, area }) => {
   const getEfficiencyRating = () => {
     const totalLoad = heatingLoad + coolingLoad;
     
-    if (totalLoad < 20) {
+    if (totalLoad < 25) {
       return {
         rating: 'A',
         color: '#388e3c',
@@ -26,7 +26,7 @@ const EfficiencyClassifier = ({ heatingLoad, coolingLoad, area }) => {
         details: 'Excellent thermal performance with very low energy requirements.',
         percentage: 10
       };
-    } else if (totalLoad < 30) {
+    } else if (totalLoad <50) {
       return {
         rating: 'B',
         color: '#4caf50',
@@ -34,7 +34,7 @@ const EfficiencyClassifier = ({ heatingLoad, coolingLoad, area }) => {
         details: 'Above-average thermal performance with low energy requirements.',
         percentage: 30
       };
-    } else if (totalLoad < 40) {
+    } else if (totalLoad < 75) {
       return {
         rating: 'C',
         color: '#8bc34a',
@@ -42,7 +42,7 @@ const EfficiencyClassifier = ({ heatingLoad, coolingLoad, area }) => {
         details: 'Standard thermal performance with moderate energy requirements.',
         percentage: 50
       };
-    } else if (totalLoad < 50) {
+    } else if (totalLoad < 100) {
       return {
         rating: 'D',
         color: '#ffc107',

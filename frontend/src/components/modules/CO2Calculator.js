@@ -127,51 +127,51 @@ const CO2Calculator = ({ heatingLoad, coolingLoad, area, city }) => {
   const emissionsPerM2 = totalEmission / area;
   
   const getRatingDetails = () => {
-    if (emissionsPerM2 < 30) {
-      return { 
-        rating: 'A+', 
+    if (emissionsPerM2 < 10) {
+    return { 
+        rating: 'A', 
         color: '#388e3c',
         text: 'Very Low Carbon',
         percentage: 10
       };
-    } else if (emissionsPerM2 < 50) {
+    } else if (emissionsPerM2 < 20) {
       return { 
-        rating: 'A', 
+        rating: 'B', 
         color: '#4caf50',
         text: 'Low Carbon', 
         percentage: 25
       };
-    } else if (emissionsPerM2 < 70) {
+    } else if (emissionsPerM2 < 35) {
       return { 
-        rating: 'B', 
+        rating: 'C', 
         color: '#8bc34a',
         text: 'Below Average', 
         percentage: 40
       };
-    } else if (emissionsPerM2 < 90) {
+    } else if (emissionsPerM2 < 50) {
       return { 
-        rating: 'C', 
+        rating: 'D', 
         color: '#ffc107',
         text: 'Average', 
         percentage: 55
       };
-    } else if (emissionsPerM2 < 120) {
+    } else if (emissionsPerM2 < 70) {
       return { 
-        rating: 'D', 
+        rating: 'E', 
         color: '#ff9800',
         text: 'Above Average', 
         percentage: 70
       };
-    } else if (emissionsPerM2 < 150) {
+    } else if (emissionsPerM2 < 100) {
       return { 
-        rating: 'E', 
+        rating: 'F', 
         color: '#ff5722',
         text: 'High Carbon', 
         percentage: 85
       };
     } else {
       return { 
-        rating: 'F', 
+        rating: 'G', 
         color: '#f44336',
         text: 'Very High Carbon', 
         percentage: 100
