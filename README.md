@@ -1,23 +1,37 @@
+<!-- Banner -->
+<p align="center">
+  <a href="https://www.uit.edu.vn/" title="Trường Đại học Công nghệ Thông tin" style="border: none;">
+    <img src="https://i.imgur.com/WmMnSRt.png" alt="Trường Đại học Công nghệ Thông tin | University of Information Technology">
+  </a>
+</p>
+
+<!-- Title -->
+<h1 align="center"><b>Data Mining and Application</b></h1>
+
+<!-- Main -->
 # Building Energy Efficiency Prediction System
 
 ## Project Overview
 This project is a comprehensive system for predicting building energy efficiency based on architectural parameters. Using machine learning models, the system predicts heating and cooling loads required to maintain comfortable indoor conditions, helping architects and building designers create more energy-efficient buildings.
 
-## 🎓 Course Information
+##  Course Information
 - **Course**: CS311.P23 - Data Mining
 - **Institution**: University of Information Technology (UIT)
 - **Semester**: Spring 2024
 
 ## 👥 Team Members - Group 2
-- Huỳnh Trọng Nghĩa (22520003)
-- Đinh Thiên Ân (22520010)
-- Nguyễn Ân (22520019)
-- Nguyễn Hoàng Gia An (22520021)
-- Phạm Nguyên Anh (22520069)
-- Nguyễn Gia Bảo (22520109)
 
-## 📚 Project Description
-The system analyzes building characteristics to predict the necessary heating and cooling loads. By inputting parameters such as relative compactness, surface area, wall area, roof area, overall height, orientation, glazing area, and glazing area distribution, architects and engineers can estimate a building's energy requirements during the design phase.
+| STT    | Studnet ID          | Full name              |Role    | Email                   |
+| ------ |:-------------:| ----------------------:|----------:|-------------------------:
+| 1      | 22520003      | Huỳnh Trọng Nghĩa         |Member|22520003@gm.uit.edu.vn   |
+| 2      | 22520010      | Đinh Thiên Ân        |Member |22520010@gm.uit.edu.vn   |
+| 3      | 22520019      | Nguyễn Ân        |Member |22520019@gm.uit.edu.vn   |
+| 4      | 22520021      | Nguyễn Hoàng Gia An        |Member |22520021@gm.uit.edu.vn   |
+| 5      | 22520069      | Phạm Nguyên Anh        |Member |22520069@gm.uit.edu.vn   |
+| 6      | 22520109      | Nguyễn Gia Bảo        |Member |22520109@gm.uit.edu.vn   |
+
+<!-- ## 📚 Project Description
+The system analyzes building characteristics to predict the necessary heating and cooling loads. By inputting parameters such as relative compactness, surface area, wall area, roof area, overall height, orientation, glazing area, and glazing area distribution, architects and engineers can estimate a building's energy requirements during the design phase. -->
 
 ### Key Features
 - **Energy Load Prediction**: Accurate prediction of heating and cooling loads
@@ -27,7 +41,7 @@ The system analyzes building characteristics to predict the necessary heating an
 - **Dockerized Deployment**: Containerized setup for easy deployment
 - **Practical Applications**: Additional calculations for HVAC sizing, cost estimation, CO₂ emissions, and solar panel recommendations
 
-## 🔧 Technology Stack
+## Technology Stack
 - **Data Processing**: Python, Pandas, NumPy
 - **Machine Learning**: Scikit-learn, XGBoost
 - **Visualization**: Matplotlib, Seaborn
@@ -38,7 +52,7 @@ The system analyzes building characteristics to predict the necessary heating an
 ## 📊 Dataset
 The project uses the Energy Efficiency Dataset from the UCI Machine Learning Repository, containing 768 building samples with 8 input features and 2 output variables (heating and cooling load). The dataset was created by simulating 12 different building shapes in Ecotect with various configurations of glazing area, orientation, and other parameters.
 
-## 🏗️ Project Structure
+## Project Structure
 ```
 ├── backend/                  # Flask API server 
 │   ├── models/               # Trained ML models
@@ -55,7 +69,7 @@ The project uses the Energy Efficiency Dataset from the UCI Machine Learning Rep
 └── README.md                 # Project documentation
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Python 3.8+
@@ -78,12 +92,11 @@ The project uses the Energy Efficiency Dataset from the UCI Machine Learning Rep
    pip install -r requirements.txt
    python app.py
    ```
-
-3. **Run the Streamlit app**
+3. **Run the frontend**
    ```bash
-   cd streamlit_app
-   pip install -r requirements.txt
-   streamlit run app1.py
+   cd frontend
+   npm install
+   npm start
    ```
 
 4. **Deploy with Docker (optional)**
@@ -97,17 +110,17 @@ The project uses the Energy Efficiency Dataset from the UCI Machine Learning Rep
 3. Receive predictions for heating and cooling loads
 4. View additional derived metrics like HVAC capacity, cost estimation, and environmental impact
 
-## 🔍 Results
+## Results
 Our models achieve high prediction accuracy with the Random Forest model performing best with:
 - R² scores of 0.99+ for both heating and cooling load predictions
 - Low error metrics (MAE, RMSE)
 - Strong performance across different building configurations
 
-## 📄 Report and Slides
-- [Project Report](https://github.com/your-username/energy-efficiency-prediction/blob/main/report/CS311_P23_Final_Report.pdf) - Detailed technical report covering methodology, experiments, and results
-- [Presentation Slides](https://github.com/your-username/energy-efficiency-prediction/blob/main/slides/CS311_P23_Presentation.pdf) - Slides used for the final project presentation
+## Report and Slides
+- [Project Report](report/CS311_report.pdf) - Detailed technical report covering methodology, experiments, and results
+- [Presentation Slides](slides/CS311_slide.pdf) - Slides used for the final project presentation
 
-## 🔗 References
+## References
 1. Tsanas, A., & Xifara, A. (2012). Accurate quantitative estimation of energy performance of residential buildings using statistical machine learning tools. Energy and Buildings, 49, 560-567.
 2. UCI Machine Learning Repository: Energy Efficiency Dataset [https://archive.ics.uci.edu/ml/datasets/Energy+efficiency](https://archive.ics.uci.edu/ml/datasets/Energy+efficiency)
 3. Moayedi, H., et al. (2019). Predicting Heating Load in Energy-Efficient Buildings Through Machine Learning Techniques. Applied Sciences, 9(20), 4338.
@@ -115,83 +128,6 @@ Our models achieve high prediction accuracy with the Random Forest model perform
 ## 📜 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🖥️ Frontend Features
+*To see the application in action,go to frontend folder and run the commands in the Getting Started section.*
 
-The project features a user-friendly Streamlit application that provides an intuitive interface for building energy efficiency prediction. 
-
-### Main Application Features:
-
-1. **Energy Efficiency Prediction Interface**
-   - Input form for building parameters (Relative Compactness, Wall Area, Roof Area, Overall Height, etc.)
-   - Model selection dropdown for choosing different machine learning algorithms
-   - Data scaling and preprocessing visualization
-   - Clear prediction results display for heating and cooling loads
-
-2. **HVAC System Capacity Calculation**
-   - Automatic calculation of required heating and cooling power in kW
-   - Sizing recommendations based on building specifications
-   - Visual representation of capacity requirements
-
-3. **Cost Estimation Module**
-   - Annual energy consumption calculation
-   - Energy cost projections based on local electricity rates
-   - Financial analysis for building operation
-
-4. **Carbon Footprint Analysis**
-   - CO₂ emissions calculation based on energy consumption
-   - Environmental impact assessment
-   - Comparison with industry standards
-
-5. **Solar Panel Recommendations**
-   - Estimation of required solar panels to offset energy consumption
-   - Integration with building energy needs
-   - Sustainable energy alternative visualization
-
-The Streamlit app provides a complete end-to-end solution from building design parameter input to comprehensive energy analysis, helping architects and engineers make informed decisions about building design choices from an energy efficiency perspective.
-
-### Application UI and Workflow:
-
-The application interface is built with a modern, clean design featuring:
-
-- **Navigation sidebar** with multiple functionality options:
-  - 🏠 Energy Prediction
-  - 🔧 HVAC Capacity Calculation
-  - 💵 Cost Estimation
-  - 🌱 CO₂ Emissions Calculation
-  - ☀️ Solar Panel Recommendations
-
-- **Input form** with carefully designed numeric inputs for:
-  - Relative Compactness (0.0-1.0)
-  - Wall Area (m²)
-  - Roof Area (m²)
-  - Overall Height (m)
-  - Glazing Area (ratio 0.0-1.0)
-  - Glazing Area Distribution (0-5)
-
-- **Data processing visualization** showing:
-  - Original dataframe with input parameters
-  - Scaled dataframe after preprocessing
-
-- **Model selection** with support for multiple algorithms:
-  - Linear Regression
-  - Decision Tree
-  - Random Forest
-  - SVM
-  - XGBoost
-  - K-Nearest Neighbors
-
-- **Results display** presenting:
-  - Predicted heating load value
-  - Predicted cooling load value
-  - Confidence metrics
-
-- **Practical application tabs** calculating:
-  - HVAC system capacity (kW) based on floor area and predicted loads
-  - Annual energy costs based on Vietnamese electricity rates
-  - CO₂ emissions (kg CO₂/year) with environmental impact assessment
-  - Required number of solar panels based on energy consumption
-  - Building efficiency rating (A/B/C scale)
-
-The blue-themed interface with a professional background provides an intuitive user experience for architects, engineers, and building designers, allowing them to iterate quickly through different building design parameters to optimize for energy efficiency.
-
-*To see the application in action, run the Streamlit app following the instructions in the Getting Started section.*
+<p align='center'>Copyright © 2025 - Group 2</p>
